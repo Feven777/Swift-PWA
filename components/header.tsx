@@ -25,6 +25,7 @@ export default function Header() {
     e.preventDefault();
     if (searchQuery.trim()) {
       // In a real app, this would navigate to search results
+      //navigate to search results
       console.log(`Searching for: ${searchQuery}`);
       router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
     }
