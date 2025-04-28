@@ -113,7 +113,14 @@ export default function Header() {
                     <Package className="h-5 w-5 text-gray-500" />
                     <span>📦 Orders</span>
                   </Link>
-
+                  <Link
+                    href="/checkout"
+                    className="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition-colors"
+                  >
+                    <ShoppingCart className="h-5 w-5 text-gray-500" />{" "}
+                    {/* You can replace ShoppingCart with the appropriate icon */}
+                    <span>🛒 Checkout</span>
+                  </Link>
                   <Link
                     href="/profile"
                     className="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition-colors"
