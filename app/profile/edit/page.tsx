@@ -1,11 +1,17 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import Image from "next/image"
-import { Camera } from "lucide-react"
-import ProfileSidebar from "@/components/profile-sidebar"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import Image from "next/image";
+import { Camera } from "lucide-react";
+import ProfileSidebar from "@/components/profile-sidebar";
 
 export default function EditProfilePage() {
   return (
@@ -17,7 +23,9 @@ export default function EditProfilePage() {
         </div>
 
         <div>
-          <h1 className="text-2xl font-semibold text-gray-800 mb-6">Edit Profile</h1>
+          <h1 className="text-2xl font-semibold text-gray-800 mb-6">
+            Edit Profile
+          </h1>
 
           <div className="space-y-6">
             <Card>
@@ -30,7 +38,7 @@ export default function EditProfilePage() {
                   <div className="relative">
                     <div className="w-32 h-32 rounded-full overflow-hidden bg-red-200">
                       <Image
-                        src="/placeholder.svg?height=128&width=128"
+                        src="/profile.jpg?height=128&width=128"
                         alt="Profile Picture"
                         width={128}
                         height={128}
@@ -44,7 +52,9 @@ export default function EditProfilePage() {
                   <div className="space-y-4 flex-1">
                     <div>
                       <h3 className="font-medium mb-1">Upload a new photo</h3>
-                      <p className="text-sm text-gray-500 mb-3">Your photo should be in JPG or PNG format</p>
+                      <p className="text-sm text-gray-500 mb-3">
+                        Your photo should be in JPG or PNG format
+                      </p>
                       <div className="flex items-center gap-4">
                         <Button variant="outline">Choose File</Button>
                         <Button variant="ghost" className="text-red-600">
@@ -60,7 +70,9 @@ export default function EditProfilePage() {
             <Card>
               <CardHeader>
                 <CardTitle>Basic Information</CardTitle>
-                <CardDescription>Update your basic profile information</CardDescription>
+                <CardDescription>
+                  Update your basic profile information
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -90,5 +102,5 @@ export default function EditProfilePage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
