@@ -1,12 +1,24 @@
 "use client";
 
 import type React from "react";
-
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Search, MapPin, ShoppingCart, Menu, ArrowRight } from "lucide-react";
+import { House } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  ArrowRight,
+  Search,
+  MapPin,
+  ShoppingCart,
+  Menu,
+  LogOut,
+  User,
+  Home,
+  Package,
+  ShoppingBag,
+  Store,
+} from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -73,82 +85,47 @@ export default function Header() {
                     href="/"
                     className="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition-colors"
                   >
-                    <Image
-                      src="/placeholder.svg?height=24&width=24&text=Home"
-                      alt="Home"
-                      width={24}
-                      height={24}
-                      className="rounded-full"
-                    />
-                    <span>Home</span>
+                    <House className="h-5 w-5 text-gray-500" />{" "}
+                    {/* Updated icon */}
+                    <span>🏠 Home</span>
                   </Link>
 
                   <Link
                     href="/supermarkets"
                     className="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition-colors"
                   >
-                    <Image
-                      src="/placeholder.svg?height=24&width=24&text=Store"
-                      alt="Supermarkets"
-                      width={24}
-                      height={24}
-                      className="rounded-full"
-                    />
-                    <span>Supermarkets</span>
+                    <Store className="h-5 w-5 text-gray-500" />
+                    <span>🏪 Supermarkets</span>
                   </Link>
 
                   <Link
                     href="/cart"
                     className="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition-colors"
                   >
-                    <Image
-                      src="/placeholder.svg?height=24&width=24&text=Cart"
-                      alt="Cart"
-                      width={24}
-                      height={24}
-                      className="rounded-full"
-                    />
-                    <span>Cart</span>
+                    <ShoppingBag className="h-5 w-5 text-gray-500" />
+                    <span>🛒 Cart</span>
                   </Link>
 
                   <Link
                     href="/orders"
                     className="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition-colors"
                   >
-                    <Image
-                      src="/placeholder.svg?height=24&width=24&text=Orders"
-                      alt="Orders"
-                      width={24}
-                      height={24}
-                      className="rounded-full"
-                    />
-                    <span>Orders</span>
+                    <Package className="h-5 w-5 text-gray-500" />
+                    <span>📦 Orders</span>
                   </Link>
 
                   <Link
                     href="/profile"
                     className="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition-colors"
                   >
-                    <Image
-                      src="/placeholder.svg?height=24&width=24&text=Profile"
-                      alt="Profile"
-                      width={24}
-                      height={24}
-                      className="rounded-full"
-                    />
-                    <span>Profile</span>
+                    <User className="h-5 w-5 text-gray-500" />
+                    <span>👤 Profile</span>
                   </Link>
 
                   <Separator className="my-2" />
 
                   <button className="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition-colors text-red-500">
-                    <Image
-                      src="/placeholder.svg?height=24&width=24&text=Logout"
-                      alt="Logout"
-                      width={24}
-                      height={24}
-                      className="rounded-full"
-                    />
+                    <LogOut className="h-5 w-5" />
                     <span>Log out</span>
                   </button>
                 </div>
