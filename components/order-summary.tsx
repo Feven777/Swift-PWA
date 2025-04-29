@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Truck, Clock, Store } from "lucide-react";
 import { useCheckout } from "@/context/checkout-context";
+import { useRouter } from "next/navigation"; // Correct import for Next.js App Router
 
 export default function OrderSummary() {
   const {
@@ -23,6 +24,8 @@ export default function OrderSummary() {
     pickupTime,
   } = useCheckout();
 
+  const router = useRouter(); // Initialize router for navigation
+
   const selectedStoreData = storeLocations.find(
     (store) => store.id === selectedStore
   );
@@ -33,6 +36,18 @@ export default function OrderSummary() {
 
   const handleModifyOrder = () => {
     setCurrentStep(1);
+  };
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat("en-ET", {
+      style: "currency",
+      currency: "ETB",
+      currencyDisplay: "symbol", // Use "Br" symbol
+    }).format(value);
+  };
+
+  const handleEditCart = () => {
+    router.push("/cart"); // Navigate to the cart page
   };
 
   return (
@@ -52,12 +67,12 @@ export default function OrderSummary() {
               {selectedStoreData && (
                 <p className="text-xs md:text-sm text-gray-600">
                   Pickup from: {selectedStoreData.name},{" "}
-                  {selectedStoreData.address}, {selectedStoreData.city},{" "}
-                  {selectedStoreData.state}
+                  {selectedStoreData.address}, Addis Ababa, Ethiopia
                 </p>
               )}
               <p className="text-xs md:text-sm text-green-600 mt-1">
-                {pickupTime || "Available for pickup: Today, 4:00 PM – 8:00 PM"}
+                {pickupTime ||
+                  "Available for pickup: Today, 10:00 AM – 6:00 PM"}
               </p>
             </div>
           </div>
@@ -70,12 +85,16 @@ export default function OrderSummary() {
             <div className="text-gray-700">
               {item.quantity}x {item.name}
             </div>
-            <div className="font-medium">${item.price.toFixed(2)}</div>
+            <div className="font-medium">{formatCurrency(item.price)}</div>
           </div>
         ))}
 
         <div className="text-right">
-          <Button variant="link" className="text-xs md:text-sm p-0 h-auto">
+          <Button
+            variant="link"
+            className="text-xs md:text-sm p-0 h-auto"
+            onClick={handleEditCart} // Navigate to the cart page
+          >
             Edit Cart
           </Button>
         </div>
@@ -84,23 +103,23 @@ export default function OrderSummary() {
       <div className="space-y-2 py-3 md:py-4 border-t border-b text-sm">
         <div className="flex justify-between text-gray-600">
           <span>Subtotal</span>
-          <span>${subtotal.toFixed(2)}</span>
+          <span>{formatCurrency(subtotal)}</span>
         </div>
         {deliveryMethod === "delivery" && (
           <div className="flex justify-between text-gray-600">
             <span>Delivery Fee</span>
-            <span>${deliveryFee.toFixed(2)}</span>
+            <span>{formatCurrency(deliveryFee)}</span>
           </div>
         )}
         <div className="flex justify-between text-gray-600">
           <span>Tax</span>
-          <span>${tax.toFixed(2)}</span>
+          <span>{formatCurrency(tax)}</span>
         </div>
       </div>
 
       <div className="flex justify-between py-3 md:py-4 font-medium text-base md:text-lg">
         <span>Total</span>
-        <span>${total.toFixed(2)}</span>
+        <span>{formatCurrency(total)}</span>
       </div>
 
       {deliveryMethod === "delivery" && (

@@ -32,22 +32,6 @@ export default function ProfilePage() {
             <LoyaltyPoints />
           </div>
 
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-semibold text-gray-800">
-              Your Orders
-            </h1>
-            <div className="relative w-full max-w-md ml-auto hidden md:block">
-              <input
-                type="text"
-                placeholder="Search orders..."
-                className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                value={searchQuery}
-                onChange={handleSearch}
-              />
-              <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-            </div>
-          </div>
-
           {/* Mobile Search - Only visible on mobile */}
           <div className="relative w-full mb-6 md:hidden">
             <input

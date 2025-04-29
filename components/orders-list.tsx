@@ -248,9 +248,13 @@ export default function OrdersList() {
 
   // Calculate total price
   const calculateTotal = (items: any[]) => {
-    return items
-      .reduce((total, item) => total + item.price * item.quantity, 0)
-      .toFixed(2);
+    return new Intl.NumberFormat("en-ET", {
+      style: "currency",
+      currency: "ETB",
+      currencyDisplay: "symbol", // Use "Br" symbol
+    }).format(
+      items.reduce((total, item) => total + item.price * item.quantity, 0)
+    );
   };
 
   // Function to handle reordering
@@ -335,7 +339,7 @@ export default function OrdersList() {
       // Add new order to the list
       const newOrder = {
         id: newOrderId,
-        date: new Date().toLocaleString("en-US", {
+        date: new Date().toLocaleString("am-ET", {
           year: "numeric",
           month: "long",
           day: "numeric",
@@ -438,7 +442,11 @@ export default function OrdersList() {
           <div className="flex justify-between items-center mt-4">
             <div>
               <span className="font-bold text-lg">
-                ${order.totalPrice.toFixed(2)}
+                {new Intl.NumberFormat("en-ET", {
+                  style: "currency",
+                  currency: "ETB",
+                  currencyDisplay: "symbol", // Use "Br" symbol
+                }).format(order.totalPrice)}
               </span>
               <button
                 onClick={() => handleViewDetails(order.id)}
@@ -510,7 +518,12 @@ export default function OrdersList() {
                         <div>
                           <p className="font-medium">{item.name}</p>
                           <p className="text-sm text-gray-500">
-                            ${item.price.toFixed(2)} each
+                            {new Intl.NumberFormat("en-ET", {
+                              style: "currency",
+                              currency: "ETB",
+                              currencyDisplay: "symbol",
+                            }).format(item.price)}{" "}
+                            each
                           </p>
                         </div>
                       </div>
@@ -538,7 +551,11 @@ export default function OrdersList() {
                           </Button>
                         </div>
                         <span className="w-20 text-right font-medium">
-                          ${(item.price * item.quantity).toFixed(2)}
+                          {new Intl.NumberFormat("en-ET", {
+                            style: "currency",
+                            currency: "ETB",
+                            currencyDisplay: "symbol",
+                          }).format(item.price * item.quantity)}
                         </span>
                         <Button
                           variant="ghost"
@@ -559,7 +576,7 @@ export default function OrdersList() {
                   <div className="text-right">
                     <p className="text-sm text-gray-500">Total</p>
                     <p className="font-bold text-lg">
-                      ${calculateTotal(orderItems)}
+                      {calculateTotal(orderItems)}
                     </p>
                   </div>
                 </div>
@@ -595,7 +612,11 @@ export default function OrdersList() {
                       <div>
                         <p className="font-medium">{product.name}</p>
                         <p className="text-sm text-gray-500">
-                          ${product.price.toFixed(2)}
+                          {new Intl.NumberFormat("en-ET", {
+                            style: "currency",
+                            currency: "ETB",
+                            currencyDisplay: "symbol",
+                          }).format(product.price)}
                         </p>
                       </div>
                     </div>
@@ -626,7 +647,12 @@ export default function OrdersList() {
                 <p>
                   You'll earn approximately{" "}
                   {Math.floor(
-                    Number.parseFloat(calculateTotal(orderItems)) / 3
+                    Number.parseFloat(
+                      orderItems.reduce(
+                        (total, item) => total + item.price * item.quantity,
+                        0
+                      )
+                    ) / 3
                   )}{" "}
                   loyalty points
                 </p>
