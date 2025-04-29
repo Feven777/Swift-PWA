@@ -28,19 +28,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [cartItems, setCartItems] = useState<CartItem[]>([
     {
       id: 1,
-      name: "Premium Wireless Headphones",
-      description: "Black | Noise Cancelling",
-      price: 17000, // Price in Ethiopian Birr
+      name: "Apple",
+      description: "Good for health/sugar free",
+      price: 200, // Price in Ethiopian Birr
       quantity: 1,
-      image: "/placeholder.svg?height=100&width=100",
+      image: "/apple.jpg?height=100&width=100",
     },
     {
       id: 2,
-      name: "Smart Watch Series 5",
-      description: "Silver | 44mm",
-      price: 22800, // Price in Ethiopian Birr
+      name: "Chicken",
+      description: "yummy | 44mm",
+      price: 300, // Price in Ethiopian Birr
       quantity: 2,
-      image: "/placeholder.svg?height=100&width=100",
+      image: "/chicken.jpg?height=100&width=100",
     },
   ]);
 

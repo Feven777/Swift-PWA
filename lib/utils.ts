@@ -5,10 +5,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// Add the formatCurrency function
+// Corrected formatCurrency function
 export function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat("en-ET", {
     style: "currency",
-    currency: "USD", // Change "USD" to your desired currency, e.g., "ETB" for Ethiopian Birr
+    currency: "ETB", // Ethiopian Birr
+    currencyDisplay: "symbol", // Use the currency symbol (e.g., "Br")
   }).format(value);
 }

@@ -14,7 +14,6 @@ import {
   Menu,
   LogOut,
   User,
-  Home,
   Package,
   ShoppingBag,
   Store,
@@ -28,16 +27,16 @@ import {
 } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
+import { useCart } from "@/context/cart-context"; // Import the useCart hook
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
+  const { totalItems } = useCart(); // Access totalItems from the cart context
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      // In a real app, this would navigate to search results
-      //navigate to search results
       console.log(`Searching for: ${searchQuery}`);
       router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
     }
@@ -58,15 +57,8 @@ export default function Header() {
                 <SheetHeader>
                   <SheetTitle>
                     <div className="flex items-center">
-                      <Image
-                        src="/swift-logo.png?height=40&width=40&text=Swift"
-                        alt="Swift Logo"
-                        width={40}
-                        height={40}
-                        className="h-10 w-10"
-                      />
                       <span className="ml-2 text-green-600 font-bold text-xl">
-                        SWIFT
+                        SWIFT Supermarket
                       </span>
                     </div>
                   </SheetTitle>
@@ -75,7 +67,7 @@ export default function Header() {
                   <Button
                     variant="outline"
                     className="justify-start h-12 text-base"
-                    onClick={() => router.push("/signup")} // Navigate to the signup page
+                    onClick={() => router.push("/signup")}
                   >
                     Sign In
                   </Button>
@@ -86,8 +78,7 @@ export default function Header() {
                     href="/"
                     className="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition-colors"
                   >
-                    <House className="h-5 w-5 text-gray-500" />{" "}
-                    {/* Updated icon */}
+                    <House className="h-5 w-5 text-gray-500" />
                     <span>🏠 Home</span>
                   </Link>
 
@@ -118,8 +109,7 @@ export default function Header() {
                     href="/checkout"
                     className="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition-colors"
                   >
-                    <ShoppingCart className="h-5 w-5 text-gray-500" />{" "}
-                    {/* You can replace ShoppingCart with the appropriate icon */}
+                    <ShoppingCart className="h-5 w-5 text-gray-500" />
                     <span>🛒 Checkout</span>
                   </Link>
                   <Link
@@ -142,15 +132,12 @@ export default function Header() {
             <Link href="/" className="flex-shrink-0">
               <div className="flex items-center">
                 <Image
-                  src="/placeholder.svg?height=40&width=40&text=Swift"
+                  src="/swift-logo.png"
                   alt="Swift Logo"
-                  width={40}
-                  height={40}
-                  className="h-10 w-10"
+                  width={70}
+                  height={70}
+                  className="h-20 w-20"
                 />
-                <span className="ml-2 text-green-600 font-bold text-xl">
-                  SWIFT
-                </span>
               </div>
             </Link>
           </div>
@@ -180,10 +167,12 @@ export default function Header() {
           <div className="flex items-center">
             <div className="flex items-center mr-4 text-sm text-gray-700">
               <MapPin className="h-5 w-5 text-gray-400 mr-1" />
-              <span className="hidden md:inline">Delivering to:</span> New York
+              <span className="hidden md:inline">Delivering to:</span> Addis
+              Ababa
             </div>
 
             <Button
+              onClick={() => router.push("/login")}
               variant="default"
               className="mr-4 bg-green-600 hover:bg-green-700"
             >
@@ -191,10 +180,12 @@ export default function Header() {
             </Button>
 
             <Link href="/cart" className="relative">
-              <ShoppingCart className="h-6 w-6" />
-              <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                4
-              </span>
+              <ShoppingCart className="w-6 h-6" />
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
             </Link>
           </div>
         </div>

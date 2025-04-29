@@ -9,14 +9,18 @@ import QuantitySelector from "@/components/cart/quantity-selector";
 import OrderSummary from "@/components/cart/order-summary";
 import { useCart } from "@/context/cart-context";
 import { formatCurrency } from "@/lib/utils";
+import { useRouter } from "next/navigation"; // ✅ Import useRouter
+import { off } from "node:process";
 
 export default function CartPage() {
   const { cartItems, updateQuantity, removeFromCart, clearCart, subtotal } =
     useCart();
 
-  const shipping = 570; // Shipping in Ethiopian Birr
-  const tax = 3600; // Tax in Ethiopian Birr
+  const shipping = 150;
+  const tax = 0.15 * subtotal; // Assuming tax is 15% of subtotal
   const total = subtotal + shipping + tax;
+
+  const router = useRouter(); // ✅ Initialize router
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -113,11 +117,14 @@ export default function CartPage() {
             />
 
             <div className="mt-4 space-y-3">
-              <button className="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-md font-medium transition-colors">
+              <button
+                onClick={() => router.push("/checkout")} // ✅ Navigate on click
+                className="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-md font-medium transition-colors"
+              >
                 Proceed to Checkout
               </button>
               <Link
-                href="/shop"
+                href="/products" // <-- Updated route here
                 className="block text-center text-orange-400 hover:text-orange-500 font-medium"
               >
                 Continue Shopping
