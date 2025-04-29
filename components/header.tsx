@@ -75,6 +75,7 @@ export default function Header() {
                   <Button
                     variant="outline"
                     className="justify-start h-12 text-base"
+                    onClick={() => router.push("/signup")} // Navigate to the signup page
                   >
                     Sign In
                   </Button>

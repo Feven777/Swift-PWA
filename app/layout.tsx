@@ -3,9 +3,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
 import { LoyaltyProvider } from "@/context/loyalty-context";
+import { CartProvider } from "@/context/cart-context"; // Import CartProvider
 import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -31,8 +30,12 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <LoyaltyProvider>
-            <main className="min-h-screen bg-gray-50">{children}</main>
-            <Toaster />
+            <CartProvider>
+              {" "}
+              {/* Wrap the application with CartProvider */}
+              <main className="min-h-screen bg-gray-50">{children}</main>
+              <Toaster />
+            </CartProvider>
           </LoyaltyProvider>
         </ThemeProvider>
       </body>
