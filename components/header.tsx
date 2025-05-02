@@ -6,10 +6,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { House } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import AddressSelector from "@/components/address-selector"; // Import AddressSelector
 import {
   ArrowRight,
   Search,
-  MapPin,
   ShoppingCart,
   Menu,
   LogOut,
@@ -99,7 +99,7 @@ export default function Header() {
                   </Link>
 
                   <Link
-                    href="/orders"
+                    href="/tracking"
                     className="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition-colors"
                   >
                     <Package className="h-5 w-5 text-gray-500" />
@@ -165,11 +165,8 @@ export default function Header() {
           </div>
 
           <div className="flex items-center">
-            <div className="flex items-center mr-4 text-sm text-gray-700">
-              <MapPin className="h-5 w-5 text-gray-400 mr-1" />
-              <span className="hidden md:inline">Delivering to:</span> Addis
-              Ababa
-            </div>
+            {/* Use AddressSelector Component */}
+            <AddressSelector />
 
             <Button
               onClick={() => router.push("/login")}
