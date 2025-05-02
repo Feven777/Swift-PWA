@@ -4,7 +4,6 @@ import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { DashboardLayout } from "@/components/layout/dashboard-layout"
 import { useAuth } from "@/hooks/use-auth"
-import { BuyerDashboard } from "@/components/dashboard/buyer-dashboard"
 import { ManagerDashboard } from "@/components/dashboard/manager-dashboard"
 import { AdminDashboard } from "@/components/dashboard/admin-dashboard"
 
@@ -29,10 +28,13 @@ export default function DashboardPage() {
   if (!user) {
     return null
   }
+  if (user.role === "buyer") {
+    router.push("/")
+    return
+  }
 
   return (
     <DashboardLayout>
-      {user.role === "buyer" && <BuyerDashboard />}
       {user.role === "manager" && <ManagerDashboard />}
       {user.role === "admin" && <AdminDashboard />}
     </DashboardLayout>

@@ -29,12 +29,15 @@ export default function SettingsPage() {
   if (!user) {
     return null
   }
+  if (user.role === "buyer") {
+    router.push("/profile/setting/page.tsx")
+    return
+  }
 
   return (
     <DashboardLayout>
-      {user.role === "buyer" && <BuyerSettings />}
       {user.role === "manager" && <ManagerSettings />}
       {user.role === "admin" && <AdminSettings />}
     </DashboardLayout>
-  )
-}
+
+  )}
