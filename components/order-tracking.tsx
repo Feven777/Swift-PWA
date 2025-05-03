@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import "../app/tracking.css";
+
 import {
   CheckCircle,
   Package,
@@ -188,7 +189,7 @@ export default function OrderTracking() {
       if (window.initializeMap) {
         delete window.initializeMap;
       }
-    };      
+    };
   }, []);
 
   const handleSaveAddress = () => {
@@ -227,8 +228,7 @@ export default function OrderTracking() {
   };
 
   return (
-    <div className="tracking-container">
-      
+    <div className="tracking-container">    
 
       {/* Main Content */}
       <main className="tracking-main">
