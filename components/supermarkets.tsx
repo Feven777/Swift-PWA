@@ -1,83 +1,85 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect } from "react"
-import { Search, ChevronDown } from "lucide-react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import React, { useState, useEffect } from "react";
+import { Search, ChevronDown } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { SupermarketCard } from "@/components/supermarket-card"
-import type { Supermarket } from "@/types/supermarket"
-import { fetchSupermarkets } from "@/lib/api"
+} from "@/components/ui/dropdown-menu";
+import { SupermarketCard } from "@/components/supermarket-card";
+import type { Supermarket } from "@/types/supermarket";
+import { fetchSupermarkets } from "@/lib/api";
 
 export function Supermarkets() {
-  const [supermarkets, setSupermarkets] = useState<Supermarket[]>([])
-  const [filteredSupermarkets, setFilteredSupermarkets] = useState<Supermarket[]>([])
-  const [searchQuery, setSearchQuery] = useState("")
-  const [distanceFilter, setDistanceFilter] = useState<string>("All")
-  const [priceFilter, setPriceFilter] = useState<string>("All")
-  const [categoryFilter, setCategoryFilter] = useState<string>("All")
-  const [sortOption, setSortOption] = useState<string>("Recommended")
-  const [isLoading, setIsLoading] = useState(true)
+  const [supermarkets, setSupermarkets] = useState<Supermarket[]>([]);
+  const [filteredSupermarkets, setFilteredSupermarkets] = useState<
+    Supermarket[]
+  >([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [distanceFilter, setDistanceFilter] = useState<string>("All");
+  const [priceFilter, setPriceFilter] = useState<string>("All");
+  const [categoryFilter, setCategoryFilter] = useState<string>("All");
+  const [sortOption, setSortOption] = useState<string>("Recommended");
+  const [isLoading, setIsLoading] = useState(true);
 
   // 1️⃣ Load data once
   useEffect(() => {
-    ;(async () => {
-      setIsLoading(true)
+    (async () => {
+      setIsLoading(true);
       try {
-        const data = await fetchSupermarkets()
-        setSupermarkets(data)
-        setFilteredSupermarkets(data)
+        const data = await fetchSupermarkets();
+        setSupermarkets(data);
+        setFilteredSupermarkets(data);
       } catch (err) {
-        console.error(err)
+        console.error(err);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    })()
-  }, [])
+    })();
+  }, []);
 
   // 2️⃣ Whenever any filter/search/sort changes, re-apply
   useEffect(() => {
-    let list = [...supermarkets]
+    let list = [...supermarkets];
 
     // — search
     if (searchQuery) {
-      const q = searchQuery.toLowerCase()
-      list = list.filter((m) => m.name.toLowerCase().includes(q))
+      const q = searchQuery.toLowerCase();
+      list = list.filter((m) => m.name.toLowerCase().includes(q));
     }
 
     // — distance
     if (distanceFilter !== "All") {
-      const max = parseFloat(distanceFilter)
-      list = list.filter((m) => m.distance <= max)
+      const max = parseFloat(distanceFilter);
+      list = list.filter((m) => m.distance <= max);
     }
 
     // — category
     if (categoryFilter !== "All") {
-      list = list.filter((m) => m.categories.includes(categoryFilter))
+      list = list.filter((m) => m.categories.includes(categoryFilter));
     }
 
     // — price sort
     if (priceFilter === "Low to High") {
-      list.sort((a, b) => a.deliveryFee - b.deliveryFee)
+      list.sort((a, b) => a.deliveryFee - b.deliveryFee);
     } else if (priceFilter === "High to Low") {
-      list.sort((a, b) => b.deliveryFee - a.deliveryFee)
+      list.sort((a, b) => b.deliveryFee - a.deliveryFee);
     }
 
     // — other sorts
     if (sortOption === "Distance") {
-      list.sort((a, b) => a.distance - b.distance)
+      list.sort((a, b) => a.distance - b.distance);
     } else if (sortOption === "Rating") {
-      list.sort((a, b) => b.rating - a.rating)
+      list.sort((a, b) => b.rating - a.rating);
     } else if (sortOption === "Delivery Time") {
-      list.sort((a, b) => a.deliveryTimeMin - b.deliveryTimeMin)
+      list.sort((a, b) => a.deliveryTimeMin - b.deliveryTimeMin);
     }
 
-    setFilteredSupermarkets(list)
+    setFilteredSupermarkets(list);
   }, [
     supermarkets,
     searchQuery,
@@ -85,14 +87,15 @@ export function Supermarkets() {
     priceFilter,
     categoryFilter,
     sortOption,
-  ])
+  ]);
 
   return (
     <section className="flex-1 bg-white">
       <div className="max-w-6xl mx-auto px-4 py-6">
         <h1 className="text-2xl font-bold text-gray-800 mb-1">Supermarkets</h1>
         <p className="text-gray-600 mb-6">
-          Browse supermarkets and retail stores available for delivery in your area
+          Browse supermarkets and retail stores available for delivery in your
+          area
         </p>
 
         {/* — Search-as-you-type (no form) */}
@@ -158,16 +161,21 @@ export function Supermarkets() {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="flex items-center gap-1 ml-auto">
+              <Button
+                variant="outline"
+                className="flex items-center gap-1 ml-auto"
+              >
                 Sort <ChevronDown className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              {["Recommended", "Distance", "Rating", "Delivery Time"].map((s) => (
-                <DropdownMenuItem key={s} onClick={() => setSortOption(s)}>
-                  {s}
-                </DropdownMenuItem>
-              ))}
+              {["Recommended", "Distance", "Rating", "Delivery Time"].map(
+                (s) => (
+                  <DropdownMenuItem key={s} onClick={() => setSortOption(s)}>
+                    {s}
+                  </DropdownMenuItem>
+                )
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -176,7 +184,10 @@ export function Supermarkets() {
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-64 bg-gray-100 rounded-lg animate-pulse" />
+              <div
+                key={i}
+                className="h-64 bg-gray-100 rounded-lg animate-pulse"
+              />
             ))}
           </div>
         ) : (
@@ -188,5 +199,5 @@ export function Supermarkets() {
         )}
       </div>
     </section>
-  )
+  );
 }
