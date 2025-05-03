@@ -533,4 +533,6 @@ export default function SupermarketsAdminPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </DashboardLayout>\
+    </DashboardLayout>
+  )}
+  

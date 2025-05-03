@@ -11,9 +11,17 @@ export default function DashboardPage() {
   const { user, isLoading } = useAuth()
   const router = useRouter()
 
+  // redirect to auth if not logged in
   useEffect(() => {
     if (!isLoading && !user) {
       router.push("/auth")
+    }
+  }, [user, isLoading, router])
+
+  // redirect buyers back to home once we know user
+  useEffect(() => {
+    if (!isLoading && user?.role === "buyer") {
+      router.push("/")
     }
   }, [user, isLoading, router])
 
@@ -25,12 +33,9 @@ export default function DashboardPage() {
     )
   }
 
-  if (!user) {
+  // while redirecting buyers or unauthenticated, don't render page UI
+  if (!user || user.role === "buyer") {
     return null
-  }
-  if (user.role === "buyer") {
-    router.push("/")
-    return
   }
 
   return (

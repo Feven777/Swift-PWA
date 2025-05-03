@@ -1,54 +1,59 @@
 "use client";
 
+import { useState, useCallback } from "react";
 import type React from "react";
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  House,
   ArrowRight,
   Search,
-  MapPin,
-  ShoppingCart,
   Menu,
-  LogOut,
+  ShoppingCart,
   User,
-  Package,
-  ShoppingBag,
+  LogOut,
   Store,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { Icon } from "@iconify/react";
+import { useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/use-auth";
 import { MobileSidebar } from "@/components/layout/mobile-sidebar";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   Sheet,
+  SheetTrigger,
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { useCart } from "@/context/cart-context";
 import AddressSelector from "../address-selector";
+import { Icon } from "@iconify/react/dist/iconify.js";
+
 export function Header() {
   const router = useRouter();
+  const pathname = usePathname();
   const { user, logout } = useAuth();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [cartItems, setCartItems] = useState(2);
-  const [location, setLocation] = useState("Addis Ababa");
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const role = user?.role ?? "buyer";
+  const isManagerAdmin = role === "manager" || role === "admin";
   const { totalItems } = useCart();
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
+  const toggleMobileSidebar = useCallback(() => {
+    setIsMobileSidebarOpen((o) => !o);
+  }, []);
+  const closeMobileSidebar = useCallback(() => {
+    setIsMobileSidebarOpen(false);
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,7 +61,6 @@ export function Header() {
       router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
-
   const handleLoginClick = () => {
     router.push("/auth");
   };
@@ -65,146 +69,108 @@ export function Header() {
     router.push("/profile");
   };
 
-  const toggleMobileSidebar = () => {
-    setIsMobileSidebarOpen(!isMobileSidebarOpen);
-  };
+  // sheet navigation uses emojis only
+  const buyerNav = [
+    { emoji: "🏠", title: "Home", href: "/" },
+    { emoji: "🏪", title: "Supermarkets", href: "/supermarkets" },
+    { emoji: "🛒", title: "Cart", href: "/cart" },
+    { emoji: "📦", title: "Orders", href: "/tracking" },
+    { emoji: "👤", title: "Profile", href: "/profile" },
+  ];
+  const adminNav = [
+    { emoji: "🏠", title: "Home", href: "/" },
+    { emoji: "📊", title: "Dashboard", href: "/dashboard" },
+    { emoji: "🏪", title: "Supermarkets", href: "/supermarkets" },
+    { emoji: "📦", title: "Orders", href: "/orders" },
+    { emoji: "🛍️", title: "Products", href: "/products" },
+    { emoji: "👥", title: "Users", href: "/admin/users" },
+    { emoji: "🛠️", title: "Management", href: "/admin/supermarkets" },
+    { emoji: "⚙️", title: "Settings", href: "/settings" },
+  ];
+  const sheetNav = role === "buyer" ? buyerNav : adminNav;
+
+  const sheetBtnClass =
+    role === "buyer"
+      ? "p-2 hover:bg-gray-100 rounded-full"
+      : pathname !== "/dashboard"
+      ? "p-2 hover:bg-gray-100 rounded-full hidden lg:block"
+      : "hidden";
 
   return (
     <>
       <MobileSidebar
         isOpen={isMobileSidebarOpen}
-        onClose={() => setIsMobileSidebarOpen(false)}
+        onClose={closeMobileSidebar}
       />
-
-      <header className="sticky top-0 z-40 w-full  bg-[#f9f7f2] border-b border-gray-200  py-2">
-        <div className="max-w-6xl mx-auto flex items-center justify-between sm:px-6  lg:px-8 h-10">
+      <header className="sticky top-0 z-40 w-full bg-[#f9f7f2] border-b py-2">
+        <div className="max-w-6xl mx-auto flex items-center justify-between px-4 h-10">
+          {/* Hamburger + Logo */}
           <div className="flex items-center gap-4">
-            <button
-              className="p-2 hover:bg-gray-100 rounded-full"
-              aria-label="Menu"
-              onClick={toggleMobileSidebar}
-            >
-              <Icon icon="mdi:menu" className="h-6 w-6" />
-            </button>
-          </div>
-          <div className="flex items-center">
+            {isManagerAdmin && (
+              <button
+                onClick={toggleMobileSidebar}
+                className="p-2 hover:bg-gray-100 rounded-full lg:hidden"
+                aria-label="Menu"
+              >
+                <Menu className="h-6 w-6" />
+              </button>
+            )}
             <Sheet>
               <SheetTrigger asChild>
-                <button className="mr-2">
+                <button className={sheetBtnClass} aria-label="Menu">
                   <Menu className="h-6 w-6" />
                 </button>
               </SheetTrigger>
               <SheetContent side="left" className="w-[300px] sm:w-[350px]">
                 <SheetHeader>
-                  <SheetTitle>
-                    <div className="flex items-center">
-                      <span className="ml-2 text-green-600 font-bold text-xl">
-                        SWIFT Supermarket
-                      </span>
-                    </div>
+                  <SheetTitle className="text-green-600 font-bold text-xl">
+                    SWIFT {role === "buyer" ? "Supermarket" : "Dashboard"}
                   </SheetTitle>
                 </SheetHeader>
                 <div className="mt-8 flex flex-col gap-4">
-                  <Button
-                    variant="outline"
-                    className="justify-start h-12 text-base"
-                    onClick={() => router.push("/signup")}
-                  >
-                    Sign In
-                  </Button>
-
-                  <Separator className="my-2" />
-
-                  <Link
-                    href="/"
-                    className="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition-colors"
-                  >
-                    <House className="h-5 w-5 text-gray-500" />
-                    <span>🏠 Home</span>
-                  </Link>
-
-                  <Link
-                    href="/supermarkets"
-                    className="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition-colors"
-                  >
-                    <Store className="h-5 w-5 text-gray-500" />
-                    <span>🏪 Supermarkets</span>
-                  </Link>
-
-                  <Link
-                    href="/cart"
-                    className="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition-colors"
-                  >
-                    <ShoppingBag className="h-5 w-5 text-gray-500" />
-                    <span>🛒 Cart</span>
-                  </Link>
-
-                  <Link
-                    href="/orders"
-                    className="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition-colors"
-                  >
-                    <Package className="h-5 w-5 text-gray-500" />
-                    <span>📦 Orders</span>
-                  </Link>
-                  <Link
-                    href="/checkout"
-                    className="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition-colors"
-                  >
-                    <ShoppingCart className="h-5 w-5 text-gray-500" />
-                    <span>🛒 Checkout</span>
-                  </Link>
-                  <Link
-                    href="/profile"
-                    className="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition-colors"
-                  >
-                    <User className="h-5 w-5 text-gray-500" />
-                    <span>👤 Profile</span>
-                  </Link>
-
-                  <Separator className="my-2" />
-
-                  <button className="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100 transition-colors text-red-500">
-                    <LogOut className="h-5 w-5" />
-                    <span>Log out</span>
-                  </button>
+                  {sheetNav.map(({ emoji, title, href }) => (
+                    <Link
+                      key={href}
+                      href={href}
+                      className="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-gray-100"
+                    >
+                      <span className="text-xl inline-block w-6">{emoji}</span>
+                      <span className="flex-1">{title}</span>
+                    </Link>
+                  ))}
                 </div>
               </SheetContent>
             </Sheet>
             <Link href="/" className="flex-shrink-0">
-              <div className="flex items-center">
-                <Image
-                  src="/swift-logo.png"
-                  alt="Swift Logo"
-                  width={70}
-                  height={70}
-                  className="h-20 w-20"
-                />
-              </div>
+              <Image
+                src="/swift-logo.png"
+                alt="Swift Logo"
+                width={70}
+                height={70}
+                className="h-20 w-20"
+              />
             </Link>
           </div>
-
+          {/* Search */}
           <div className="flex-1 max-w-xl mx-4">
             <form onSubmit={handleSearch} className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400" />
-              </div>
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <input
                 type="text"
-                className="block w-full pl-10 pr-12 py-2 border border-gray-300 rounded-full bg-white placeholder-gray-500 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                className="w-full pl-10 pr-12 py-2 border rounded-full"
                 placeholder="Search for groceries, brands, or categories..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               <button
                 type="submit"
-                className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                aria-label="Search"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2"
               >
                 <ArrowRight className="h-5 w-5 text-green-600" />
               </button>
             </form>
           </div>
-
+          {/* Account Dropdown & Cart */}
           <div className="flex items-center gap-2">
             <AddressSelector />
 
@@ -245,20 +211,16 @@ export function Header() {
               </Button>
             )}
 
-            {user?.role === "buyer" && (
-              <div className="relative">
-                <Link
-                  href="/cart"
-                  className="p-2 hover:bg-gray-100 rounded-full"
-                >
-                  <Icon icon="mdi:cart" className="h-6 w-6" />
-                  {cartItems > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-secondary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                      {cartItems}
-                    </span>
-                  )}
-                </Link>
-              </div>
+            {role === "buyer" && totalItems > 0 && (
+              <Link
+                href="/cart"
+                className="relative p-2 hover:bg-gray-100 rounded-full"
+              >
+                <ShoppingCart className="h-6 w-6" />
+                <span className="absolute -top-1 -right-1 bg-secondary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {totalItems}
+                </span>
+              </Link>
             )}
           </div>
         </div>
