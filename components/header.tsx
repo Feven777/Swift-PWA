@@ -8,12 +8,12 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 
-import { House } from "lucide-react";
+import { House, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import AddressSelector from "@/components/address-selector"; // Import AddressSelector
 import {
   ArrowRight,
   Search,
-  MapPin,
   ShoppingCart,
   Menu,
   LogOut,
@@ -178,11 +178,8 @@ export function Header() {
           </button>
 
           <div className="flex items-center">
-            <div className="flex items-center mr-4 text-sm text-gray-700">
-              <MapPin className="h-5 w-5 text-gray-400 mr-1" />
-              <span className="hidden md:inline">Delivering to:</span> Addis
-              Ababa
-            </div>
+            {/* Use AddressSelector Component */}
+            <AddressSelector />
 
             <Button
               onClick={() => router.push("/login")}
