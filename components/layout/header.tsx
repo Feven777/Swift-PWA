@@ -40,6 +40,7 @@ import {
 } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { useCart } from "@/context/cart-context";
+import AddressSelector from "../address-selector";
 export function Header() {
   const router = useRouter();
   const { user, logout } = useAuth();
@@ -205,12 +206,7 @@ export function Header() {
           </div>
 
           <div className="flex items-center gap-2">
-            <button className="flex items-center gap-1 text-gray-600 text-sm px-2 py-1 rounded-full hover:bg-gray-100">
-              <Icon icon="mdi:map-marker" className="h-4 w-4" />
-              <span className="hidden sm:inline-block">
-                Delivering to: {location}
-              </span>
-            </button>
+            <AddressSelector />
 
             {user ? (
               <DropdownMenu>
