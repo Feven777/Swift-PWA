@@ -39,7 +39,7 @@ const mockUsers: User[] = [
     name: "Buyer Demo",
     email: "buyer@example.com",
     role: "buyer",
-    avatarUrl: "/profile1.jpg",
+    avatarUrl: "/profile.jpg",
   },
   {
     id: "2",
@@ -53,7 +53,7 @@ const mockUsers: User[] = [
     name: "Admin Demo",
     email: "admin@example.com",
     role: "admin",
-    avatarUrl: "/profile1.jpg",
+    avatarUrl: "/profile.jpg",
   },
   {
     id: "4",
@@ -71,7 +71,7 @@ const mockUsers: User[] = [
     role: "employee",
     supermarketId: 2,
     supermarketName: "Safeway Supermarket",
-    avatarUrl: "/profile1.jpg",
+    avatarUrl: "/profile.jpg",
   },
   {
     id: "6",
@@ -89,7 +89,7 @@ const mockUsers: User[] = [
     role: "employee",
     supermarketId: 4,
     supermarketName: "Mafi City Mall Supermarket",
-    avatarUrl: "/profile1.jpg",
+    avatarUrl: "/profile.jpg",
   },
   {
     id: "8",
@@ -107,7 +107,7 @@ const mockUsers: User[] = [
     role: "employee",
     supermarketId: 6,
     supermarketName: "Getfam Supermarket",
-    avatarUrl: "/profile1.jpg",
+    avatarUrl: "/profile.jpg",
   },
   {
     id: "10",

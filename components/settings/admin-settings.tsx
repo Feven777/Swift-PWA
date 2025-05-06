@@ -200,33 +200,6 @@ export function AdminSettings() {
 
                 <Separator className="my-4" />
 
-                <div className="space-y-2">
-                  <Label htmlFor="current-password">Current Password</Label>
-                  <Input
-                    id="current-password"
-                    type="password"
-                    value={accountSettings.currentPassword}
-                    onChange={(e) => setAccountSettings({ ...accountSettings, currentPassword: e.target.value })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="new-password">New Password</Label>
-                  <Input
-                    id="new-password"
-                    type="password"
-                    value={accountSettings.newPassword}
-                    onChange={(e) => setAccountSettings({ ...accountSettings, newPassword: e.target.value })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="confirm-password">Confirm Password</Label>
-                  <Input
-                    id="confirm-password"
-                    type="password"
-                    value={accountSettings.confirmPassword}
-                    onChange={(e) => setAccountSettings({ ...accountSettings, confirmPassword: e.target.value })}
-                  />
-                </div>
               </CardContent>
               <CardFooter>
                 <Button type="submit" disabled={isLoading}>

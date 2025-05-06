@@ -66,8 +66,17 @@ export function Header() {
   };
 
   const handleProfileClick = () => {
+    switch (role) {
+    case "admin":
+    router.push("/admin/profile");
+    break;
+    case "manager":
+    router.push("/manager/profile");
+    break;
+    default:
     router.push("/profile");
-  };
+    }
+    };
 
   // sheet navigation uses emojis only
   const buyerNav = [
