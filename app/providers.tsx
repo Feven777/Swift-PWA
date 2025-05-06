@@ -2,11 +2,15 @@
 
 import type { ReactNode } from "react"
 import { AuthProvider } from "@/hooks/use-auth"
+import { EmployeeProvider } from "@/hooks/use-employee"
+import { OrderProvider } from "@/hooks/use-orders"
 
-interface ProvidersProps {
-  children: ReactNode
-}
-
-export function Providers({ children }: ProvidersProps) {
-  return <AuthProvider>{children}</AuthProvider>
+export function Providers({ children }: { children: ReactNode }) {
+  return (
+    <AuthProvider>
+      <EmployeeProvider>
+        <OrderProvider>{children}</OrderProvider>
+      </EmployeeProvider>
+    </AuthProvider>
+  )
 }

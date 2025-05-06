@@ -1,149 +1,204 @@
 "use client"
 
 import type React from "react"
+import { createContext, useContext, useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import type { User } from "@/types/user"
 
-import { createContext, useContext, useEffect, useState } from "react"
+export type UserRole = "buyer" | "manager" | "admin" | "employee"
 
-// Define user types
-export type UserRole = "buyer" | "manager" | "admin"
-
-export interface User {
-  id: string
-  name: string
-  email: string
-  role: UserRole
-}
-
-// Define auth context type
 interface AuthContextType {
   user: User | null
   isLoading: boolean
-  login: (email: string, password: string) => Promise<boolean>
-  register: (name: string, email: string, password: string, role: UserRole) => Promise<boolean>
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
+  register: (
+    name: string,
+    email: string,
+    password: string,
+    role: UserRole,
+    supermarketId?: number,
+    supermarketName?: string,
+  ) => Promise<{ success: boolean; error?: string }>
   logout: () => void
-  isAuthenticated: boolean
 }
 
-// Create auth context
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 // Mock users for demo purposes
-const mockUsers = [
+const mockUsers: User[] = [
   {
     id: "1",
     name: "Buyer Demo",
     email: "buyer@example.com",
-    password: "password123",
-    role: "buyer" as UserRole,
+    role: "buyer",
   },
   {
     id: "2",
     name: "Manager Demo",
     email: "manager@example.com",
-    password: "password123",
-    role: "manager" as UserRole,
+    role: "manager",
   },
   {
     id: "3",
     name: "Admin Demo",
     email: "admin@example.com",
-    password: "password123",
-    role: "admin" as UserRole,
+    role: "admin",
+  },
+  {
+    id: "4",
+    name: "Employee Demo",
+    email: "employee@example.com",
+    role: "employee",
+    supermarketId: 1,
+    supermarketName: "Fresh Market",
+  },
+  {
+    id: "5",
+    name: "Jane Employee",
+    email: "jane@example.com",
+    role: "employee",
+    supermarketId: 2,
+    supermarketName: "Super Grocers",
+  },
+  {
+    id: "6",
+    name: "Mark Employee",
+    email: "mark@example.com",
+    role: "employee",
+    supermarketId: 3,
+    supermarketName: "Value Mart",
+  },
+  {
+    id: "7",
+    name: "Chris Employee",
+    email: "chris@example.com",
+    role: "employee",
+    supermarketId: 4,
+    supermarketName: "Metro Grocery",
+  },
+  {
+    id: "8",
+    name: "Alex Employee",
+    email: "alex@example.com",
+    role: "employee",
+    supermarketId: 5,
+    supermarketName: "City Fresh",
+  },
+  {
+    id: "9",
+    name: "Sam Employee",
+    email: "sam@example.com",
+    role: "employee",
+    supermarketId: 6,
+    supermarketName: "Green Basket",
+  },
+  {
+    id: "10",
+    name: "Jordan Employee",
+    email: "jordan@example.com",
+    role: "employee",
+    supermarketId: 7,
+    supermarketName: "Quick & Fresh",
   },
 ]
 
-// Auth provider component
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const router = useRouter()
 
-  // Check for existing session on mount
   useEffect(() => {
-    const storedUser = localStorage.getItem("swift_user")
+    // Check if user is stored in localStorage
+    const storedUser = localStorage.getItem("user")
     if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser))
-      } catch (error) {
-        console.error("Failed to parse stored user:", error)
-        localStorage.removeItem("swift_user")
-      }
+      setUser(JSON.parse(storedUser))
     }
     setIsLoading(false)
   }, [])
 
-  // Login function
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (email: string, password: string) => {
     setIsLoading(true)
+    try {
+      // Simulate API call delay
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
-    // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+      // Find user with matching email
+      const foundUser = mockUsers.find((u) => u.email === email)
+      if (!foundUser) {
+        return { success: false, error: "Invalid email or password" }
+      }
 
-    // Find user in mock data
-    const foundUser = mockUsers.find((u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password)
+      // In a real app, you would verify the password here
+      // For demo purposes, we'll just accept any password
 
-    if (foundUser) {
-      const { password: _, ...userWithoutPassword } = foundUser
-      setUser(userWithoutPassword)
-      localStorage.setItem("swift_user", JSON.stringify(userWithoutPassword))
+      // Store user in localStorage
+      localStorage.setItem("user", JSON.stringify(foundUser))
+      setUser(foundUser)
+
+      return { success: true }
+    } catch (error) {
+      return { success: false, error: "An error occurred during login" }
+    } finally {
       setIsLoading(false)
-      return true
     }
-
-    setIsLoading(false)
-    return false
   }
 
-  // Register function
-  const register = async (name: string, email: string, password: string, role: UserRole): Promise<boolean> => {
+  const register = async (
+    name: string,
+    email: string,
+    password: string,
+    role: UserRole,
+    supermarketId?: number,
+    supermarketName?: string,
+  ) => {
     setIsLoading(true)
+    try {
+      // Simulate API call delay
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
-    // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+      // Check if email is already in use
+      if (mockUsers.some((u) => u.email === email)) {
+        return { success: false, error: "Email is already in use" }
+      }
 
-    // Check if email already exists
-    const emailExists = mockUsers.some((u) => u.email.toLowerCase() === email.toLowerCase())
+      // Create new user
+      const newUser: User = {
+        id: String(mockUsers.length + 1),
+        name,
+        email,
+        role,
+      }
 
-    if (emailExists) {
+      // Add supermarket info for employees
+      if (role === "employee" && supermarketId && supermarketName) {
+        newUser.supermarketId = supermarketId
+        newUser.supermarketName = supermarketName
+      }
+
+      // In a real app, you would hash the password and store the user in a database
+      mockUsers.push(newUser)
+
+      // Store user in localStorage
+      localStorage.setItem("user", JSON.stringify(newUser))
+      setUser(newUser)
+
+      return { success: true }
+    } catch (error) {
+      return { success: false, error: "An error occurred during registration" }
+    } finally {
       setIsLoading(false)
-      return false
     }
-
-    // Create new user
-    const newUser = {
-      id: `${mockUsers.length + 1}`,
-      name,
-      email,
-      role,
-    }
-
-    // In a real app, we would save this to a database
-    // For now, we'll just set the current user
-    setUser(newUser)
-    localStorage.setItem("swift_user", JSON.stringify(newUser))
-
-    setIsLoading(false)
-    return true
   }
 
-  // Logout function
   const logout = () => {
+    localStorage.removeItem("user")
     setUser(null)
-    localStorage.removeItem("swift_user")
+    router.push("/")
   }
 
-  const value = {
-    user,
-    isLoading,
-    login,
-    register,
-    logout,
-    isAuthenticated: !!user,
-  }
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ user, isLoading, login, register, logout }}>{children}</AuthContext.Provider>
 }
 
-// Custom hook to use auth context
 export function useAuth() {
   const context = useContext(AuthContext)
   if (context === undefined) {

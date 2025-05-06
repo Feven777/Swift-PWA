@@ -28,10 +28,23 @@ export function AuthForm() {
   const [registerName, setRegisterName] = useState("")
   const [registerEmail, setRegisterEmail] = useState("")
   const [registerPassword, setRegisterPassword] = useState("")
-  const [registerRole, setRegisterRole] = useState("buyer")
+  const [registerRole, setRegisterRole] = useState<"buyer" | "manager" | "admin" | "employee">("buyer")
+  const [registerSupermarketId, setRegisterSupermarketId] = useState<number | undefined>(undefined)
   const [registerNameError, setRegisterNameError] = useState("")
   const [registerEmailError, setRegisterEmailError] = useState("")
   const [registerPasswordError, setRegisterPasswordError] = useState("")
+  const [registerSupermarketError, setRegisterSupermarketError] = useState("")
+
+  const supermarkets = [
+    { id: 1, name: "Shola Supermarket" },
+    { id: 2, name: "Safeway Supermarket" },
+    { id: 3, name: "Fresh Corner Market" },
+    { id: 4, name: "Mafi City Mall Supermarket" },
+    { id: 5, name: "Friendship Supermarket" },
+    { id: 6, name: "Getfam Supermarket" },
+    { id: 7, name: "Zemen Mart" },
+  ]
+
 
   const router = useRouter()
   const { toast } = useToast()
@@ -152,7 +165,19 @@ export function AuthForm() {
 
     setIsLoading(true)
     try {
-      const success = await register(registerName, registerEmail, registerPassword, registerRole as any)
+      let supermarketName
+      if (registerRole === "employee" && registerSupermarketId) {
+        const selectedSupermarket = supermarkets.find((s) => s.id === registerSupermarketId)
+        supermarketName = selectedSupermarket?.name
+      }
+      const success = await register(
+        registerName,
+        registerEmail,
+        registerPassword,
+        registerRole,
+        registerSupermarketId,
+        supermarketName,
+      )
 
       if (success) {
         toast({
@@ -286,7 +311,7 @@ export function AuthForm() {
                 <label htmlFor="role" className="text-sm font-medium">
                   Role
                 </label>
-                <Select value={registerRole} onValueChange={setRegisterRole}>
+                <Select value={registerRole} onValueChange={(value) => setRegisterRole(value as "buyer" | "manager" | "admin" | "employee")}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select your role" />
                   </SelectTrigger>
@@ -294,9 +319,33 @@ export function AuthForm() {
                     <SelectItem value="buyer">Buyer</SelectItem>
                     <SelectItem value="manager">Supermarket Manager</SelectItem>
                     <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="employee">Employee</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
+              {registerRole === "employee" && (
+                <div className="space-y-2">
+                  <label htmlFor="supermarket" className="text-sm font-medium">
+                    Supermarket
+                  </label>
+                  <Select
+                    value={registerSupermarketId?.toString()}
+                    onValueChange={(value) => setRegisterSupermarketId(Number(value))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select your supermarket" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {supermarkets.map((supermarket) => (
+                        <SelectItem key={supermarket.id} value={supermarket.id.toString()}>
+                          {supermarket.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {registerSupermarketError && <p className="text-sm text-destructive">{registerSupermarketError}</p>}
+                </div>
+              )}
 
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? (

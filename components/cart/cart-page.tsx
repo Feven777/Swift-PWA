@@ -47,7 +47,7 @@ export default function CartPage() {
               <div className="bg-white rounded-lg p-6 text-center">
                 <p className="text-gray-500 mb-4">Your cart is empty</p>
                 <Link
-                  href="/shop"
+                  href="/" 
                   className="text-green-500 hover:text-green-600 font-medium"
                 >
                   Continue Shopping
@@ -122,7 +122,7 @@ export default function CartPage() {
                 Proceed to Checkout
               </button>
               <Link
-                href="/products" // <-- Updated route here
+                href="/" 
                 className="block text-center text-orange-400 hover:text-orange-500 font-medium"
               >
                 Continue Shopping

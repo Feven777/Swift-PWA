@@ -24,13 +24,19 @@ export function Sidebar() {
       title: "Home",
       href: "/",
       icon: "mdi:home",
-      roles: ["buyer", "manager", "admin"],
+      roles: ["buyer", "manager", "admin", "employee"],
     },
     {
       title: "Dashboard",
       href: "/dashboard",
       icon: "mdi:chart-bar",
-      roles: ["buyer", "manager", "admin"],
+      roles: ["buyer", "manager", "admin", "employee"],
+    },
+    {
+      title: "Orders",
+      href: "/employee/orders",
+      icon: "mdi:package",
+      roles: ["employee"],
     },
     {
       title: "Supermarkets",
@@ -74,8 +80,13 @@ export function Sidebar() {
       icon: "mdi:cog",
       roles: ["buyer", "manager", "admin"],
     },
+    {
+      title: "Profile",
+      href: "/employee/profile",
+      icon: "mdi:account-cog",
+      roles: ["employee"],
+    },
   ]
-
   const filteredNavItems = navItems.filter((item) => item.roles.includes(role))
 
   return (

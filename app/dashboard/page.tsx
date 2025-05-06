@@ -6,6 +6,7 @@ import { DashboardLayout } from "@/components/layout/dashboard-layout"
 import { useAuth } from "@/hooks/use-auth"
 import { ManagerDashboard } from "@/components/dashboard/manager-dashboard"
 import { AdminDashboard } from "@/components/dashboard/admin-dashboard"
+import { EmployeeDashboard } from "@/components/dashboard/employee-dashboard"
 
 export default function DashboardPage() {
   const { user, isLoading } = useAuth()
@@ -42,6 +43,7 @@ export default function DashboardPage() {
     <DashboardLayout>
       {user.role === "manager" && <ManagerDashboard />}
       {user.role === "admin" && <AdminDashboard />}
+      {user.role === "employee" && <EmployeeDashboard />}
     </DashboardLayout>
   )
 }

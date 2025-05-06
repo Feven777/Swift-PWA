@@ -15,4 +15,5 @@ export interface Supermarket {
   phone?: string
   email?: string
   openingHours?: string
+  discount?: string;
 }
