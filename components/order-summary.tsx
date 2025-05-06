@@ -4,7 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Truck, Clock, Store } from "lucide-react";
 import { useCheckout } from "@/context/checkout-context";
-import { useRouter } from "next/navigation"; // Correct import for Next.js App Router
+
+// Helper function to format currency in ETB
+const formatCurrency = (amount: number) => {
+  return `${amount.toFixed(2)} Br`;
+};
 
 export default function OrderSummary() {
   const {
@@ -19,16 +23,21 @@ export default function OrderSummary() {
     setCurrentStep,
     orderPlaced,
     deliveryMethod,
-    selectedStore,
-    storeLocations,
     pickupTime,
   } = useCheckout();
 
-  const router = useRouter(); // Initialize router for navigation
+  // Mock defaultStore
+  const defaultStore = {
+    name: "Swift Supermarket",
+    address: "123 Main St",
+    city: "Addis Ababa",
+    state: "Addis Ababa",
+  };
 
-  const selectedStoreData = storeLocations.find(
-    (store) => store.id === selectedStore
-  );
+  // Mock handleEditCart function
+  const handleEditCart = () => {
+    console.log("Navigating to the cart page...");
+  };
 
   const handlePlaceOrder = () => {
     setCurrentStep(3);
@@ -38,23 +47,9 @@ export default function OrderSummary() {
     setCurrentStep(1);
   };
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("en-ET", {
-      style: "currency",
-      currency: "ETB",
-      currencyDisplay: "symbol", // Use "Br" symbol
-    }).format(value);
-  };
-
-  const handleEditCart = () => {
-    router.push("/cart"); // Navigate to the cart page
-  };
-
   return (
-    <div className="bg-white rounded-lg border p-4 md:p-6 sticky top-4 mt-6 md:mt-0">
-      <h2 className="text-base md:text-lg font-medium mb-3 md:mb-4">
-        Order Summary
-      </h2>
+    <div className="bg-white rounded-lg border p-4 md:p-6 sticky top-4">
+      <h2 className="text-lg md:text-xl font-medium mb-4">Order Summary</h2>
 
       {deliveryMethod === "pickup" && (
         <div className="bg-green-50 border border-green-100 rounded-lg p-3 mb-4">
@@ -64,15 +59,12 @@ export default function OrderSummary() {
               <div className="font-medium text-sm md:text-base">
                 Pickup Order
               </div>
-              {selectedStoreData && (
-                <p className="text-xs md:text-sm text-gray-600">
-                  Pickup from: {selectedStoreData.name},{" "}
-                  {selectedStoreData.address}, Addis Ababa, Ethiopia
-                </p>
-              )}
+              <p className="text-xs md:text-sm text-gray-600">
+                Pickup from: {defaultStore.name}, {defaultStore.address},{" "}
+                {defaultStore.city}, {defaultStore.state}
+              </p>
               <p className="text-xs md:text-sm text-green-600 mt-1">
-                {pickupTime ||
-                  "Available for pickup: Today, 10:00 AM – 6:00 PM"}
+                {pickupTime || "Available for pickup: Today, 4:00 PM – 8:00 PM"}
               </p>
             </div>
           </div>
@@ -123,7 +115,7 @@ export default function OrderSummary() {
       </div>
 
       {deliveryMethod === "delivery" && (
-        <div className="bg-gray-50 p-3 rounded-lg my-4 flex items-start">
+        <div className="bg-gray-50 p-3 rounded-lg mb-4 flex items-start">
           <Truck className="h-4 w-4 md:h-5 md:w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
           <div>
             <div className="font-medium text-sm md:text-base">
@@ -131,7 +123,7 @@ export default function OrderSummary() {
             </div>
             <div className="text-xs md:text-sm text-gray-600 flex items-center">
               <Clock className="h-3 w-3 mr-1" />
-              Today, 6:00 PM–7:30 PM
+              Today, 6:00 PM-7:30 PM
             </div>
           </div>
         </div>

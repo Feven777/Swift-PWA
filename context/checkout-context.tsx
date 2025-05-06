@@ -13,6 +13,12 @@ export interface Address {
   phone: string;
 }
 
+export interface DeliveryDetailsType {
+  apartmentNumber: string;
+  deliveryInstructions: string;
+  contactPhone: string;
+}
+
 export interface StoreLocation {
   id: string;
   name: string;
@@ -49,17 +55,21 @@ interface CheckoutContextType {
   setDeliveryMethod: (method: "delivery" | "pickup") => void;
   selectedAddress: string;
   setSelectedAddress: (addressId: string) => void;
+  deliveryAddress: string;
+  setDeliveryAddress: (address: string) => void;
+  deliveryDetails: DeliveryDetailsType;
+  setDeliveryDetails: (details: DeliveryDetailsType) => void;
   addresses: Address[];
   setAddresses: (addresses: Address[]) => void;
   editingAddress: Address | null;
   setEditingAddress: (address: Address | null) => void;
   isEditingAddress: boolean;
   setIsEditingAddress: (isEditing: boolean) => void;
-  selectedStore: string;
-  setSelectedStore: (storeId: string) => void;
-  storeLocations: StoreLocation[];
+  defaultStore: StoreLocation;
   pickupTime: string;
   setPickupTime: (time: string) => void;
+  pickupLocation: string;
+  setPickupLocation: (location: string) => void;
   paymentMethod: "card" | "mobile" | "cash";
   setPaymentMethod: (method: "card" | "mobile" | "cash") => void;
   selectedCard: string;
@@ -107,67 +117,48 @@ export const CheckoutProvider = ({ children }: { children: ReactNode }) => {
     "delivery"
   );
   const [selectedAddress, setSelectedAddress] = useState("home");
-  const [selectedStore, setSelectedStore] = useState("store-1");
-  const [pickupTime, setPickupTime] = useState(
-    "Available for pickup: Today, 4:00 PM – 8:00 PM"
-  );
+  const [deliveryAddress, setDeliveryAddress] = useState("");
+  const [deliveryDetails, setDeliveryDetails] = useState<DeliveryDetailsType>({
+    apartmentNumber: "",
+    deliveryInstructions: "",
+    contactPhone: "",
+  });
+  const [pickupTime, setPickupTime] = useState("Today, 4:00 PM");
+  const [pickupLocation, setPickupLocation] = useState("inside");
+
+  // Default store for pickup (no selection needed)
+  const defaultStore: StoreLocation = {
+    id: "store-1",
+    name: "Swift Market - Bole",
+    address: "Bole Road, Friendship Building",
+    city: "Addis Ababa",
+    state: "Addis Ababa",
+    zip: "1000",
+    phone: "0115570000",
+    distance: "0.8 km away",
+    hours: "8:00 AM - 10:00 PM",
+  };
 
   const [addresses, setAddresses] = useState<Address[]>([
     {
       id: "home",
       type: "Home",
-      name: "John Doe",
-      street: "123 Main Street, Apt 4B",
-      city: "New York",
-      state: "NY",
-      zip: "10001",
-      phone: "(555)123-4567",
+      name: "Abebe Kebede",
+      street: "Bole Road, Sunshine Apartment 4B",
+      city: "Addis Ababa",
+      state: "Addis Ababa",
+      zip: "1000",
+      phone: "0911234567",
     },
     {
       id: "work",
       type: "Work",
-      name: "John Doe",
-      street: "456 Business Ave, Floor 12",
-      city: "New York",
-      state: "NY",
-      zip: "10002",
-      phone: "(555)987-6543",
-    },
-  ]);
-
-  const [storeLocations, setStoreLocations] = useState<StoreLocation[]>([
-    {
-      id: "store-1",
-      name: "Swift Market - Downtown",
-      address: "789 Market Street",
-      city: "New York",
-      state: "NY",
-      zip: "10003",
-      phone: "(555)234-5678",
-      distance: "0.8 miles away",
-      hours: "8:00 AM - 10:00 PM",
-    },
-    {
-      id: "store-2",
-      name: "Swift Market - Midtown",
-      address: "456 Central Avenue",
-      city: "New York",
-      state: "NY",
-      zip: "10019",
-      phone: "(555)345-6789",
-      distance: "1.2 miles away",
-      hours: "7:00 AM - 11:00 PM",
-    },
-    {
-      id: "store-3",
-      name: "Swift Market - Uptown",
-      address: "123 North Boulevard",
-      city: "New York",
-      state: "NY",
-      zip: "10025",
-      phone: "(555)456-7890",
-      distance: "2.5 miles away",
-      hours: "8:00 AM - 9:00 PM",
+      name: "Abebe Kebede",
+      street: "Mexico Square, Dembel Tower, Floor 5",
+      city: "Addis Ababa",
+      state: "Addis Ababa",
+      zip: "1000",
+      phone: "0922345678",
     },
   ]);
 
@@ -222,7 +213,7 @@ export const CheckoutProvider = ({ children }: { children: ReactNode }) => {
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderNumber, setOrderNumber] = useState("");
   const [estimatedDelivery, setEstimatedDelivery] = useState(
-    "Today, 6:00 PM-7:30 PM"
+    "Today, 6:00 PM - 7:30 PM"
   );
 
   // Update this calculation to properly handle the delivery method
@@ -241,17 +232,21 @@ export const CheckoutProvider = ({ children }: { children: ReactNode }) => {
     setDeliveryMethod,
     selectedAddress,
     setSelectedAddress,
+    deliveryAddress,
+    setDeliveryAddress,
+    deliveryDetails,
+    setDeliveryDetails,
     addresses,
     setAddresses,
     editingAddress,
     setEditingAddress,
     isEditingAddress,
     setIsEditingAddress,
-    selectedStore,
-    setSelectedStore,
-    storeLocations,
+    defaultStore,
     pickupTime,
     setPickupTime,
+    pickupLocation,
+    setPickupLocation,
     paymentMethod,
     setPaymentMethod,
     selectedCard,

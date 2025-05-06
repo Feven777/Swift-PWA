@@ -1,22 +1,37 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Check, Truck, Calendar, MapPin, CreditCard, Store, Package, Mail, ShoppingBag } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { useCheckout } from "@/context/checkout-context"
-import { useRouter } from "next/navigation"
-import CheckoutProgress from "@/components/checkout-progress"
+import { useState } from "react";
+import {
+  Check,
+  Truck,
+  Calendar,
+  MapPin,
+  CreditCard,
+  Store,
+  Package,
+  Mail,
+  ShoppingBag,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useCheckout } from "@/context/checkout-context";
+import { useRouter } from "next/navigation";
+import CheckoutProgress from "@/components/checkout-progress";
+
+// Helper function to format currency in ETB
+const formatCurrency = (amount: number) => {
+  return `${amount.toFixed(2)} Br`;
+};
 
 export default function ConfirmationStep() {
   const {
     currentStep,
     setCurrentStep,
     deliveryMethod,
-    addresses,
-    selectedAddress,
-    storeLocations,
-    selectedStore,
+    deliveryAddress,
+    deliveryDetails,
+    defaultStore,
     pickupTime,
+    pickupLocation,
     paymentMethod,
     paymentMethods,
     selectedCard,
@@ -30,50 +45,86 @@ export default function ConfirmationStep() {
     tax,
     promoDiscount,
     total,
-  } = useCheckout()
-  const router = useRouter()
-  const [isPlacingOrder, setIsPlacingOrder] = useState(false)
+  } = useCheckout();
+  const router = useRouter();
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
-  const selectedAddressData = addresses.find((addr) => addr.id === selectedAddress)
-  const selectedStoreData = storeLocations.find((store) => store.id === selectedStore)
-  const selectedPaymentMethod = paymentMethods.find((method) => method.id === selectedCard)
+  const selectedPaymentMethod = paymentMethods.find(
+    (method) => method.id === selectedCard
+  );
 
   const handleBack = () => {
-    setCurrentStep(2)
-  }
+    setCurrentStep(2);
+  };
 
   const handlePlaceOrder = () => {
-    setIsPlacingOrder(true)
+    setIsPlacingOrder(true);
 
     // Simulate API call to place order
     setTimeout(() => {
-      setOrderPlaced(true)
-      setIsPlacingOrder(false)
-    }, 1500)
-  }
+      setOrderPlaced(true);
+      setIsPlacingOrder(false);
+    }, 1500);
+  };
 
   const handleTrackOrder = () => {
     // In a real app, this would navigate to an order tracking page
-    alert(`Tracking order ${orderNumber}`)
-  }
+    alert(`Tracking order ${orderNumber}`);
+  };
 
   const handleContinueShopping = () => {
-    router.push("/")
-  }
+    router.push("/");
+  };
 
-  // Get user email from the selected address
-  const userEmail = selectedAddressData
-    ? `${selectedAddressData.name.split(" ")[0].toLowerCase()}@example.com`
-    : "customer@example.com"
+  // Extract user name and email from the delivery address
+  const extractNameFromAddress = () => {
+    // In a real app, you would have proper user data
+    // For now, just return a placeholder name
+    return "John Doe";
+  };
+
+  const userEmail = "customer@example.com";
+
+  // Get pickup location display text
+  const getPickupLocationText = () => {
+    switch (pickupLocation) {
+      case "parking":
+        return "In the parking lot (in my car)";
+      case "entrance":
+        return "At the store entrance";
+      case "inside":
+        return "Inside at the pickup counter";
+      default:
+        return "At the store";
+    }
+  };
+
+  // Format the delivery address for display
+  const formatDeliveryAddress = () => {
+    if (!deliveryAddress) return "";
+
+    let formatted = deliveryAddress;
+
+    if (deliveryDetails.apartmentNumber) {
+      formatted += `, ${deliveryDetails.apartmentNumber}`;
+    }
+
+    return formatted;
+  };
 
   return (
     <div className="mt-4 md:mt-8">
-      <div className="mb-4 md:hidden">
-        <CheckoutProgress currentStep={currentStep} />
+      <div className="mb-4 md:mb-6">
+        <CheckoutProgress
+          currentStep={currentStep}
+          setCurrentStep={setCurrentStep}
+        />
       </div>
 
       <div className="mb-4 md:mb-8">
-        <h2 className="text-base md:text-xl font-medium mb-3 md:mb-4">Review Your Order</h2>
+        <h2 className="text-base md:text-xl font-medium mb-3 md:mb-4">
+          Review Your Order
+        </h2>
 
         {orderPlaced ? (
           <div className="space-y-4 md:space-y-6">
@@ -81,9 +132,12 @@ export default function ConfirmationStep() {
               <div className="w-12 h-12 md:w-16 md:h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
                 <Check className="h-6 w-6 md:h-8 md:w-8 text-green-500" />
               </div>
-              <h3 className="text-lg md:text-xl font-medium mb-2">Order Placed Successfully!</h3>
+              <h3 className="text-lg md:text-xl font-medium mb-2">
+                Order Placed Successfully!
+              </h3>
               <p className="text-gray-600 mb-2">
-                Your order number is: <span className="font-medium">{orderNumber}</span>
+                Your order number is:{" "}
+                <span className="font-medium">{orderNumber}</span>
               </p>
               <div className="flex items-center justify-center text-sm text-gray-600 mb-2">
                 <Mail className="h-4 w-4 mr-2 text-gray-500" />
@@ -92,16 +146,19 @@ export default function ConfirmationStep() {
               <p className="text-gray-600 text-sm md:text-base">
                 {deliveryMethod === "delivery"
                   ? "We'll deliver your order to your address."
-                  : `Pick up your order at ${selectedStoreData?.name}.`}
+                  : `Pick up your order at ${defaultStore.name}.`}
               </p>
             </div>
 
             {/* Order Confirmation Receipt (similar to what would be emailed) */}
             <div className="border rounded-lg p-4 md:p-6 bg-white">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-medium text-base md:text-lg">Order Confirmation</h3>
+                <h3 className="font-medium text-base md:text-lg">
+                  Order Confirmation
+                </h3>
                 <span className="text-xs text-gray-500">
-                  {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}
+                  {new Date().toLocaleDateString()}{" "}
+                  {new Date().toLocaleTimeString()}
                 </span>
               </div>
 
@@ -116,7 +173,9 @@ export default function ConfirmationStep() {
                       <div className="text-gray-700">
                         {item.quantity}x {item.name}
                       </div>
-                      <div className="font-medium">${item.price.toFixed(2)}</div>
+                      <div className="font-medium">
+                        {formatCurrency(item.price)}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -126,27 +185,29 @@ export default function ConfirmationStep() {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Subtotal</span>
-                    <span>${subtotal.toFixed(2)}</span>
+                    <span>{formatCurrency(subtotal)}</span>
                   </div>
                   {deliveryMethod === "delivery" && (
                     <div className="flex justify-between">
                       <span className="text-gray-600">Delivery Fee</span>
-                      <span>${deliveryFee.toFixed(2)}</span>
+                      <span>{formatCurrency(deliveryFee)}</span>
                     </div>
                   )}
                   <div className="flex justify-between">
                     <span className="text-gray-600">Tax</span>
-                    <span>${tax.toFixed(2)}</span>
+                    <span>{formatCurrency(tax)}</span>
                   </div>
                   {promoDiscount > 0 && (
                     <div className="flex justify-between">
                       <span className="text-gray-600">Discount</span>
-                      <span className="text-green-600">-${promoDiscount.toFixed(2)}</span>
+                      <span className="text-green-600">
+                        -{formatCurrency(promoDiscount)}
+                      </span>
                     </div>
                   )}
                   <div className="flex justify-between font-medium pt-2">
                     <span>Total</span>
-                    <span>${total.toFixed(2)}</span>
+                    <span>{formatCurrency(total)}</span>
                   </div>
                 </div>
               </div>
@@ -154,38 +215,57 @@ export default function ConfirmationStep() {
               <div className="space-y-4">
                 <div>
                   <h4 className="font-medium text-sm mb-2">
-                    {deliveryMethod === "delivery" ? "Delivery Information" : "Pickup Information"}
+                    {deliveryMethod === "delivery"
+                      ? "Delivery Information"
+                      : "Pickup Information"}
                   </h4>
                   <div className="text-sm text-gray-600">
-                    {deliveryMethod === "delivery" && selectedAddressData && (
+                    {deliveryMethod === "delivery" ? (
                       <>
-                        <p>{selectedAddressData.name}</p>
-                        <p>{selectedAddressData.street}</p>
-                        <p>
-                          {selectedAddressData.city}, {selectedAddressData.state} {selectedAddressData.zip}
-                        </p>
-                        <p>Phone: {selectedAddressData.phone}</p>
+                        <p>{extractNameFromAddress()}</p>
+                        <p>{formatDeliveryAddress()}</p>
+                        {deliveryDetails.contactPhone && (
+                          <p>Phone: {deliveryDetails.contactPhone}</p>
+                        )}
+                        {deliveryDetails.deliveryInstructions && (
+                          <div className="mt-2 p-2 bg-gray-50 rounded-md">
+                            <p className="font-medium">
+                              Delivery Instructions:
+                            </p>
+                            <p>{deliveryDetails.deliveryInstructions}</p>
+                          </div>
+                        )}
                         <p className="mt-2">
-                          <span className="font-medium">Estimated Delivery:</span> {estimatedDelivery}
+                          <span className="font-medium">
+                            Estimated Delivery:
+                          </span>{" "}
+                          {estimatedDelivery}
                         </p>
                         <p className="mt-1 text-xs text-gray-500">
-                          Your order will be left at your door if no one answers.
+                          Your order will be left at your door if no one
+                          answers.
                         </p>
                       </>
-                    )}
-                    {deliveryMethod === "pickup" && selectedStoreData && (
+                    ) : (
                       <>
-                        <p className="font-medium">{selectedStoreData.name}</p>
-                        <p>{selectedStoreData.address}</p>
+                        <p className="font-medium">{defaultStore.name}</p>
+                        <p>{defaultStore.address}</p>
                         <p>
-                          {selectedStoreData.city}, {selectedStoreData.state} {selectedStoreData.zip}
+                          {defaultStore.city}, {defaultStore.state}{" "}
+                          {defaultStore.zip}
                         </p>
-                        <p>Phone: {selectedStoreData.phone}</p>
+                        <p>Phone: {defaultStore.phone}</p>
                         <p className="mt-2">
-                          <span className="font-medium">Pickup Time:</span> {pickupTime}
+                          <span className="font-medium">Pickup Time:</span>{" "}
+                          {pickupTime}
+                        </p>
+                        <p className="mt-1">
+                          <span className="font-medium">Where you'll be:</span>{" "}
+                          {getPickupLocationText()}
                         </p>
                         <p className="mt-1 text-xs text-gray-500">
-                          Please bring your ID and order number when picking up your order.
+                          Please bring your ID and order number when picking up
+                          your order.
                         </p>
                       </>
                     )}
@@ -197,12 +277,14 @@ export default function ConfirmationStep() {
                   <div className="text-sm text-gray-600">
                     {paymentMethod === "card" && selectedPaymentMethod && (
                       <p>
-                        {selectedPaymentMethod.cardType} ending in {selectedPaymentMethod.lastFour}
+                        {selectedPaymentMethod.cardType} ending in{" "}
+                        {selectedPaymentMethod.lastFour}
                       </p>
                     )}
                     {paymentMethod === "mobile" && selectedPaymentMethod && (
                       <p>
-                        {selectedPaymentMethod.mobileBankName} ({selectedPaymentMethod.mobileNumber})
+                        {selectedPaymentMethod.mobileBankName} (
+                        {selectedPaymentMethod.mobileNumber})
                       </p>
                     )}
                     {paymentMethod === "cash" && <p>Cash on Delivery</p>}
@@ -212,7 +294,9 @@ export default function ConfirmationStep() {
             </div>
 
             <div className="border rounded-lg p-4 md:p-6 bg-white">
-              <h3 className="font-medium text-base md:text-lg mb-4">Order Status</h3>
+              <h3 className="font-medium text-base md:text-lg mb-4">
+                Order Status
+              </h3>
 
               <div className="relative">
                 <div className="absolute left-3 top-0 bottom-0 w-0.5 bg-gray-200"></div>
@@ -221,7 +305,9 @@ export default function ConfirmationStep() {
                   <div className="absolute left-0 w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
                     <Check className="h-3 w-3 text-white" />
                   </div>
-                  <h4 className="font-medium text-sm md:text-base">Order Received</h4>
+                  <h4 className="font-medium text-sm md:text-base">
+                    Order Received
+                  </h4>
                   <p className="text-xs md:text-sm text-gray-500 mt-1">
                     We've received your order and are processing it.
                   </p>
@@ -231,7 +317,9 @@ export default function ConfirmationStep() {
                   <div className="absolute left-0 w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
                     <Package className="h-3 w-3 text-gray-500" />
                   </div>
-                  <h4 className="font-medium text-sm md:text-base text-gray-500">Order Processing</h4>
+                  <h4 className="font-medium text-sm md:text-base text-gray-500">
+                    Order Processing
+                  </h4>
                   <p className="text-xs md:text-sm text-gray-500 mt-1">
                     {deliveryMethod === "delivery"
                       ? "Your items are being prepared for delivery."
@@ -245,9 +333,12 @@ export default function ConfirmationStep() {
                       <div className="absolute left-0 w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
                         <Truck className="h-3 w-3 text-gray-500" />
                       </div>
-                      <h4 className="font-medium text-sm md:text-base text-gray-500">Out for Delivery</h4>
+                      <h4 className="font-medium text-sm md:text-base text-gray-500">
+                        Out for Delivery
+                      </h4>
                       <p className="text-xs md:text-sm text-gray-500 mt-1">
-                        A delivery person will be assigned when your order is ready.
+                        A delivery person will be assigned when your order is
+                        ready.
                       </p>
                     </div>
                   </>
@@ -256,7 +347,9 @@ export default function ConfirmationStep() {
                     <div className="absolute left-0 w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
                       <Store className="h-3 w-3 text-gray-500" />
                     </div>
-                    <h4 className="font-medium text-sm md:text-base text-gray-500">Ready for Pickup</h4>
+                    <h4 className="font-medium text-sm md:text-base text-gray-500">
+                      Ready for Pickup
+                    </h4>
                     <p className="text-xs md:text-sm text-gray-500 mt-1">
                       We'll notify you when your order is ready for pickup.
                     </p>
@@ -267,7 +360,9 @@ export default function ConfirmationStep() {
                   <div className="absolute left-0 w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
                     <Check className="h-3 w-3 text-gray-500" />
                   </div>
-                  <h4 className="font-medium text-sm md:text-base text-gray-500">Completed</h4>
+                  <h4 className="font-medium text-sm md:text-base text-gray-500">
+                    Completed
+                  </h4>
                   <p className="text-xs md:text-sm text-gray-500 mt-1">
                     {deliveryMethod === "delivery"
                       ? "Your order has been delivered."
@@ -287,11 +382,15 @@ export default function ConfirmationStep() {
                   <Store className="h-4 w-4 md:h-5 md:w-5 text-green-500" />
                 )}
                 <h3 className="font-medium text-sm md:text-base">
-                  {deliveryMethod === "delivery" ? "Delivery Method" : "Pickup Method"}
+                  {deliveryMethod === "delivery"
+                    ? "Delivery Method"
+                    : "Pickup Method"}
                 </h3>
               </div>
               <p className="text-xs md:text-sm text-gray-600 ml-7 md:ml-8">
-                {deliveryMethod === "delivery" ? "Delivery to your address" : "Pickup from store"}
+                {deliveryMethod === "delivery"
+                  ? "Delivery to your address"
+                  : "Pickup from store"}
               </p>
             </div>
 
@@ -299,7 +398,9 @@ export default function ConfirmationStep() {
               <div className="flex items-center gap-3 mb-2 md:mb-3">
                 <Calendar className="h-4 w-4 md:h-5 md:w-5 text-green-500" />
                 <h3 className="font-medium text-sm md:text-base">
-                  {deliveryMethod === "delivery" ? "Estimated Delivery" : "Pickup Time"}
+                  {deliveryMethod === "delivery"
+                    ? "Estimated Delivery"
+                    : "Pickup Time"}
                 </h3>
               </div>
               <p className="text-xs md:text-sm text-gray-600 ml-7 md:ml-8">
@@ -311,26 +412,38 @@ export default function ConfirmationStep() {
               <div className="flex items-center gap-3 mb-2 md:mb-3">
                 <MapPin className="h-4 w-4 md:h-5 md:w-5 text-green-500" />
                 <h3 className="font-medium text-sm md:text-base">
-                  {deliveryMethod === "delivery" ? "Delivery Address" : "Pickup Location"}
+                  {deliveryMethod === "delivery"
+                    ? "Delivery Address"
+                    : "Pickup Location"}
                 </h3>
               </div>
-              {deliveryMethod === "delivery" && selectedAddressData && (
+              {deliveryMethod === "delivery" ? (
                 <div className="text-xs md:text-sm text-gray-600 ml-7 md:ml-8">
-                  <p>{selectedAddressData.name}</p>
-                  <p>{selectedAddressData.street}</p>
-                  <p>
-                    {selectedAddressData.city}, {selectedAddressData.state} {selectedAddressData.zip}
-                  </p>
-                  <p>{selectedAddressData.phone}</p>
+                  <p>{extractNameFromAddress()}</p>
+                  <p>{formatDeliveryAddress()}</p>
+                  {deliveryDetails.contactPhone && (
+                    <p>Phone: {deliveryDetails.contactPhone}</p>
+                  )}
+                  {deliveryDetails.deliveryInstructions && (
+                    <div className="mt-2 p-2 bg-gray-50 rounded-md">
+                      <p className="font-medium">Delivery Instructions:</p>
+                      <p>{deliveryDetails.deliveryInstructions}</p>
+                    </div>
+                  )}
                 </div>
-              )}
-              {deliveryMethod === "pickup" && selectedStoreData && (
+              ) : (
                 <div className="text-xs md:text-sm text-gray-600 ml-7 md:ml-8">
                   <p className="font-medium">
-                    Pickup from: {selectedStoreData.name}, {selectedStoreData.address}, {selectedStoreData.city},{" "}
-                    {selectedStoreData.state}
+                    Pickup from: {defaultStore.name}, {defaultStore.address},{" "}
+                    {defaultStore.city}, {defaultStore.state}
                   </p>
-                  <p className="mt-1">Phone: {selectedStoreData.phone}</p>
+                  <p className="mt-1">Phone: {defaultStore.phone}</p>
+                  {pickupLocation && (
+                    <p className="mt-1">
+                      <span className="font-medium">Where you'll be:</span>{" "}
+                      {getPickupLocationText()}
+                    </p>
+                  )}
                 </div>
               )}
             </div>
@@ -338,17 +451,21 @@ export default function ConfirmationStep() {
             <div className="border rounded-lg p-3 md:p-4 bg-white">
               <div className="flex items-center gap-3 mb-2 md:mb-3">
                 <CreditCard className="h-4 w-4 md:h-5 md:w-5 text-green-500" />
-                <h3 className="font-medium text-sm md:text-base">Payment Method</h3>
+                <h3 className="font-medium text-sm md:text-base">
+                  Payment Method
+                </h3>
               </div>
               <div className="text-xs md:text-sm text-gray-600 ml-7 md:ml-8">
                 {paymentMethod === "card" && selectedPaymentMethod && (
                   <p>
-                    {selectedPaymentMethod.cardType} ending in {selectedPaymentMethod.lastFour}
+                    {selectedPaymentMethod.cardType} ending in{" "}
+                    {selectedPaymentMethod.lastFour}
                   </p>
                 )}
                 {paymentMethod === "mobile" && selectedPaymentMethod && (
                   <p>
-                    Mobile Payment: {selectedPaymentMethod.mobileBankName} ({selectedPaymentMethod.mobileNumber})
+                    Mobile Payment: {selectedPaymentMethod.mobileBankName} (
+                    {selectedPaymentMethod.mobileNumber})
                   </p>
                 )}
                 {paymentMethod === "cash" && <p>Cash on Delivery</p>}
@@ -364,7 +481,11 @@ export default function ConfirmationStep() {
             <Button variant="outline" onClick={handleBack}>
               Back to Payment
             </Button>
-            <Button onClick={handlePlaceOrder} className="bg-green-500 hover:bg-green-600" disabled={isPlacingOrder}>
+            <Button
+              onClick={handlePlaceOrder}
+              className="bg-green-500 hover:bg-green-600"
+              disabled={isPlacingOrder}
+            >
               {isPlacingOrder ? "Processing..." : "Place Order"}
             </Button>
           </>
@@ -373,12 +494,15 @@ export default function ConfirmationStep() {
             <Button variant="outline" onClick={handleContinueShopping}>
               Continue Shopping
             </Button>
-            <Button onClick={handleTrackOrder} className="bg-green-500 hover:bg-green-600">
+            <Button
+              onClick={handleTrackOrder}
+              className="bg-green-500 hover:bg-green-600"
+            >
               Track Order
             </Button>
           </>
         )}
       </div>
     </div>
-  )
+  );
 }

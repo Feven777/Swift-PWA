@@ -14,11 +14,15 @@ import {
   AlertCircle,
 } from "lucide-react";
 
-export default function OrderTracking() {
+export default function OrderTracking({
+  orderNumber,
+}: {
+  orderNumber: string;
+}) {
   const mapRef = useRef(null);
 
-  const [order, setOrder] = useState({
-    id: "SWF12345",
+  const [order] = useState({
+    id: orderNumber, // Use the orderNumber here
     store: "Fresh Mart Supermarket",
     date: "May 15, 2023 2:30 PM",
     total: 78.95,
@@ -228,8 +232,7 @@ export default function OrderTracking() {
   };
 
   return (
-    <div className="tracking-container">    
-
+    <div className="tracking-container">
       {/* Main Content */}
       <main className="tracking-main">
         {/* Order Header */}

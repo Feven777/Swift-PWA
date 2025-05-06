@@ -1,11 +1,10 @@
-import Image from "next/image"
-import { Star } from "lucide-react"
-import type { Review } from "@/types/review"
+import Image from "next/image";
+import { Star } from "lucide-react";
+import type { Review } from "@/types/review";
 
 interface ReviewCardProps {
-  review: Review
+  review: Review;
 }
-
 export function ReviewCard({ review }: ReviewCardProps) {
   return (
     <div className="bg-white p-4 rounded-lg border border-gray-200">
@@ -28,7 +27,11 @@ export function ReviewCard({ review }: ReviewCardProps) {
             {[...Array(5)].map((_, i) => (
               <Star
                 key={i}
-                className={`h-3 w-3 ${i < review.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`}
+                className={`h-3 w-3 ${
+                  i < review.rating
+                    ? "text-yellow-400 fill-yellow-400"
+                    : "text-gray-300"
+                }`}
               />
             ))}
           </div>
@@ -36,5 +39,5 @@ export function ReviewCard({ review }: ReviewCardProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

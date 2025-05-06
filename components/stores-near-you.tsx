@@ -71,7 +71,7 @@ export default function StoresNearYou() {
     <section className="mt-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center">
-          <h2 className="text-xl font-bold">Stores Near You</h2>
+          <h2 className="text-xl font-bold">Supermarkets near you</h2>
           <button
             onClick={getUserLocation}
             className="ml-2 text-pink-500 cursor-pointer"
