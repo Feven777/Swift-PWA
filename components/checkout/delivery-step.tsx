@@ -119,16 +119,6 @@ export default function DeliveryStep() {
           )}
         </>
       )}
-
-      <div className="flex justify-end">
-        <Button
-          onClick={handleContinue}
-          className="bg-green-500 hover:bg-green-600"
-          disabled={!canContinue()}
-        >
-          Continue to Payment
-        </Button>
-      </div>
     </div>
   );
 }
