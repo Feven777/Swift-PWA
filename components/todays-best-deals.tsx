@@ -117,11 +117,7 @@ export default function TodaysBestDeals() {
                   {product.salePrice}
                 </span>
               </div>
-              <div className="mt-3 flex justify-between items-center">
-                <button className="text-gray-400 hover:text-gray-600">
-                  <Plus className="h-5 w-5" />
-                </button>
-              </div>
+              <div className="mt-3 flex justify-between items-center"></div>
             </div>
           </div>
         ))}

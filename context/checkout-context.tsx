@@ -20,7 +20,7 @@ export interface DeliveryDetailsType {
 }
 
 export interface StoreLocation {
-  id: string;
+  id: number;           
   name: string;
   address: string;
   city: string;
@@ -30,6 +30,7 @@ export interface StoreLocation {
   distance: string;
   hours: string;
 }
+
 
 export interface CartItem {
   id: number;
@@ -128,7 +129,7 @@ export const CheckoutProvider = ({ children }: { children: ReactNode }) => {
 
   // Default store for pickup (no selection needed)
   const defaultStore: StoreLocation = {
-    id: "store-1",
+    id: 1,
     name: "Swift Market - Bole",
     address: "Bole Road, Friendship Building",
     city: "Addis Ababa",

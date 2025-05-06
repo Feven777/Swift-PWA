@@ -41,6 +41,7 @@ interface User {
   email: string
   role: UserRole
   joinDate: string
+  avatarUrl ?: string
 }
 
 export default function UsersPage() {
