@@ -1,7 +1,7 @@
-import Link from "next/link"
-import Image from "next/image"
-import { Card, CardContent } from "@/components/ui/card"
-import { ChevronRight, ChevronLeft } from "lucide-react"
+import Link from "next/link";
+import Image from "next/image";
+import { Card, CardContent } from "@/components/ui/card";
+import { ChevronRight, ChevronLeft } from "lucide-react";
 
 const categories = [
   { name: "Milk", image: "/milk.jpg?height=40&width=40&text=Milk" },
@@ -12,7 +12,10 @@ const categories = [
   { name: "Chicken", image: "/chicken.jpg?height=40&width=40&text=Chicken" },
   { name: "Pasta", image: "/pasta.jpg?height=40&width=40&text=Rice" },
   { name: "Rice", image: "/rice.jpg?height=40&width=40&text=Pasta" },
-  { name: "Tomatoes", image: "/Tomato_je.jpg?height=40&width=40&text=Tomatoes" },
+  {
+    name: "Tomatoes",
+    image: "/Tomato_je.jpg?height=40&width=40&text=Tomatoes",
+  },
   { name: "Potatoes", image: "/potatoes.jpg?height=40&width=40&text=Potatoes" },
   { name: "Onions", image: "/onion.jpg?height=40&width=40&text=Onions" },
   { name: "Cereal", image: "/cereal.jpg?height=40&width=40&text=Cereal" },
@@ -22,14 +25,14 @@ const categories = [
   { name: "Yogurt", image: "/yoghurt.webp?height=40&width=40&text=Yogurt" },
   { name: "Oranges", image: "/orange.jpg?height=40&width=40&text=Oranges" },
   { name: "Carrots", image: "/carrot.jpg?height=40&width=40&text=Carrots" },
-]
+];
 
 export default function CategoryIcons() {
   return (
     <div className="py-4 relative group">
       <div className="overflow-x-auto flex space-x-4 pb-4 px-1 no-scrollbar">
         {categories.map((category) => (
-          <Link href={`/category/${category.name.toLowerCase()}`} key={category.name} className="flex-shrink-0">
+          <div key={category.name} className="flex-shrink-0">
             <Card className="w-20 h-20 flex flex-col items-center justify-center hover:bg-gray-50 transition-colors">
               <CardContent className="p-2 flex flex-col items-center justify-center">
                 <div className="mb-1">
@@ -41,10 +44,12 @@ export default function CategoryIcons() {
                     className="rounded-full"
                   />
                 </div>
-                <span className="text-xs text-center text-gray-700 mt-1">{category.name}</span>
+                <span className="text-xs text-center text-gray-700 mt-1">
+                  {category.name}
+                </span>
               </CardContent>
             </Card>
-          </Link>
+          </div>
         ))}
       </div>
 
@@ -60,5 +65,5 @@ export default function CategoryIcons() {
         </button>
       </div>
     </div>
-  )
+  );
 }
