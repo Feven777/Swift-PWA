@@ -72,6 +72,7 @@ export default function ProductsPage() {
         image: "/banana.webp",
         rating: 4.8,
         isOnSale: true,
+        supermarketId:  1,
       },
       {
         id: 2,
@@ -83,6 +84,7 @@ export default function ProductsPage() {
         image: "/milk.jpg",
         rating: 4.7,
         isOnSale: false,
+        supermarketId: 2,
       },
       {
         id: 3,
@@ -94,6 +96,7 @@ export default function ProductsPage() {
         image: "/bread.jpg",
         rating: 4.6,
         isOnSale: false,
+        supermarketId: 3,
       },
       {
         id: 4,
@@ -105,6 +108,7 @@ export default function ProductsPage() {
         image: "/chicken.jpg",
         rating: 4.9,
         isOnSale: false,
+        supermarketId: 3,
       },
       {
         id: 5,
@@ -116,6 +120,7 @@ export default function ProductsPage() {
         image: "/avovado.webp",
         rating: 4.7,
         isOnSale: false,
+        supermarketId: 2,
       },
       {
         id: 6,
@@ -127,6 +132,7 @@ export default function ProductsPage() {
         image: "/juice.jpg",
         rating: 4.5,
         isOnSale: true,
+        supermarketId: 5,
       },
       {
         id: 7,
@@ -138,6 +144,7 @@ export default function ProductsPage() {
         image: "/pizza.jpg",
         rating: 4.2,
         isOnSale: false,
+        supermarketId: 6,
       },
       {
         id: 8,
@@ -149,6 +156,7 @@ export default function ProductsPage() {
         image: "/cereal.jpg",
         rating: 4.0,
         isOnSale: false,
+        supermarketId: 7,
       },
     ]
 
@@ -220,6 +228,7 @@ export default function ProductsPage() {
       image: newProduct.image || "/placeholder.svg",
       rating: newProduct.rating || 4.0,
       isOnSale: newProduct.isOnSale || false,
+      supermarketId: 1, 
     }
 
     // Add to products list

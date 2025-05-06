@@ -87,7 +87,17 @@ export function Header() {
     { emoji: "🛠️", title: "Management", href: "/admin/supermarkets" },
     { emoji: "⚙️", title: "Settings", href: "/settings" },
   ];
-  const sheetNav = role === "buyer" ? buyerNav : adminNav;
+  const employeeNav = [
+    { emoji: "🏠", title: "Home", href: `/supermarket/${user?.supermarketId}` },
+    { emoji: "📊", title: "Dashboard", href: "/dashboard" },
+    { emoji: "📦", title: "Orders", href: "/employee/orders" },
+    { emoji: "🛍️", title: "Products", href: `/supermarket/${user?.supermarketId}/products` },
+    { emoji: "⚙️", title: "Settings", href: "/settings" },
+  ];
+  const sheetNav = role === "buyer"    ? buyerNav
+   : role === "employee"
+    ? employeeNav
+    : adminNav;
 
   const sheetBtnClass =
     role === "buyer"
