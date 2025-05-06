@@ -143,29 +143,6 @@ export default function OrderSummary() {
         </label>
       </div>
 
-      {currentStep === 3 && !orderPlaced ? (
-        <Button
-          className="w-full bg-green-500 hover:bg-green-600 mb-2 text-sm md:text-base"
-          onClick={handlePlaceOrder}
-        >
-          Place Order
-        </Button>
-      ) : (
-        <Button
-          className="w-full bg-green-500 hover:bg-green-600 mb-2 text-sm md:text-base"
-          onClick={() => setCurrentStep(Math.min(currentStep + 1, 3))}
-          disabled={currentStep === 3 && orderPlaced}
-        >
-          {currentStep === 1
-            ? "Continue to Payment"
-            : currentStep === 2
-            ? "Review Order"
-            : orderPlaced
-            ? "Order Placed"
-            : "Place Order"}
-        </Button>
-      )}
-
       <Button
         variant="outline"
         className="w-full text-sm md:text-base border-orange-500 text-orange-500 hover:bg-orange-50"

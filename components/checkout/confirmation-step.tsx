@@ -292,85 +292,6 @@ export default function ConfirmationStep() {
                 </div>
               </div>
             </div>
-
-            <div className="border rounded-lg p-4 md:p-6 bg-white">
-              <h3 className="font-medium text-base md:text-lg mb-4">
-                Order Status
-              </h3>
-
-              <div className="relative">
-                <div className="absolute left-3 top-0 bottom-0 w-0.5 bg-gray-200"></div>
-
-                <div className="relative pl-8 pb-6">
-                  <div className="absolute left-0 w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
-                    <Check className="h-3 w-3 text-white" />
-                  </div>
-                  <h4 className="font-medium text-sm md:text-base">
-                    Order Received
-                  </h4>
-                  <p className="text-xs md:text-sm text-gray-500 mt-1">
-                    We've received your order and are processing it.
-                  </p>
-                </div>
-
-                <div className="relative pl-8 pb-6">
-                  <div className="absolute left-0 w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
-                    <Package className="h-3 w-3 text-gray-500" />
-                  </div>
-                  <h4 className="font-medium text-sm md:text-base text-gray-500">
-                    Order Processing
-                  </h4>
-                  <p className="text-xs md:text-sm text-gray-500 mt-1">
-                    {deliveryMethod === "delivery"
-                      ? "Your items are being prepared for delivery."
-                      : "Your items are being prepared for pickup."}
-                  </p>
-                </div>
-
-                {deliveryMethod === "delivery" ? (
-                  <>
-                    <div className="relative pl-8 pb-6">
-                      <div className="absolute left-0 w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
-                        <Truck className="h-3 w-3 text-gray-500" />
-                      </div>
-                      <h4 className="font-medium text-sm md:text-base text-gray-500">
-                        Out for Delivery
-                      </h4>
-                      <p className="text-xs md:text-sm text-gray-500 mt-1">
-                        A delivery person will be assigned when your order is
-                        ready.
-                      </p>
-                    </div>
-                  </>
-                ) : (
-                  <div className="relative pl-8 pb-6">
-                    <div className="absolute left-0 w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
-                      <Store className="h-3 w-3 text-gray-500" />
-                    </div>
-                    <h4 className="font-medium text-sm md:text-base text-gray-500">
-                      Ready for Pickup
-                    </h4>
-                    <p className="text-xs md:text-sm text-gray-500 mt-1">
-                      We'll notify you when your order is ready for pickup.
-                    </p>
-                  </div>
-                )}
-
-                <div className="relative pl-8">
-                  <div className="absolute left-0 w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
-                    <Check className="h-3 w-3 text-gray-500" />
-                  </div>
-                  <h4 className="font-medium text-sm md:text-base text-gray-500">
-                    Completed
-                  </h4>
-                  <p className="text-xs md:text-sm text-gray-500 mt-1">
-                    {deliveryMethod === "delivery"
-                      ? "Your order has been delivered."
-                      : "Your order has been picked up."}
-                  </p>
-                </div>
-              </div>
-            </div>
           </div>
         ) : (
           <div className="space-y-4 md:space-y-6">
@@ -495,7 +416,7 @@ export default function ConfirmationStep() {
               Continue Shopping
             </Button>
             <Button
-              onClick={handleTrackOrder}
+              onClick={() => router.push(`/tracking`)}
               className="bg-green-500 hover:bg-green-600"
             >
               Track Order
