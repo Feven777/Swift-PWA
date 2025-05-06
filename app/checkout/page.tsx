@@ -29,7 +29,6 @@ function CheckoutContent() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-
       <main className="flex-1">
         <div className="container mx-auto px-4 py-4 md:px-6">
           {/* Responsive Grid Layout */}
@@ -51,6 +50,7 @@ function CheckoutContent() {
           </div>
         </div>
       </main>
+      y
     </div>
   );
 }

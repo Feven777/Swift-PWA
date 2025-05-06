@@ -1,119 +1,76 @@
-"use client"
+"use client";
 
-import { useEffect } from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Icon } from "@iconify/react"
-import { cn } from "@/lib/utils"
-import { useAuth } from "@/hooks/use-auth"
-import { Button } from "@/components/ui/button"
+import { useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Icon } from "@iconify/react";
+import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/use-auth";
+import { Button } from "@/components/ui/button";
 
 interface NavItem {
-  title: string
-  href: string
-  icon: string
-  roles: string[]
+  title: string;
+  href: string;
+  icon: string;
+  roles: string[];
 }
 
 interface MobileSidebarProps {
-  isOpen: boolean
-  onClose: () => void
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
-  const pathname = usePathname()
-  const { user } = useAuth()
+  const pathname = usePathname();
+  const { user } = useAuth();
 
-  // Close sidebar when clicking outside on mobile
+  // close on desktop‑resize
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth > 768 && isOpen) {
-        onClose()
+      if (window.innerWidth >= 1024 && isOpen) {
+        onClose();
       }
-    }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [isOpen, onClose]);
 
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [isOpen, onClose])
-
-  // Close sidebar when route changes
+  // close when the route changes
   useEffect(() => {
-    if (isOpen) {
-      onClose()
-    }
-  }, [pathname, isOpen, onClose])
+    onClose();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
-  const role = user?.role || "buyer"
+  const role = user?.role ?? "buyer";
 
   const navItems: NavItem[] = [
-    {
-      title: "Home",
-      href: "/",
-      icon: "mdi:home",
-      roles: ["buyer", "manager", "admin"],
-    },
-    {
-      title: "Dashboard",
-      href: "/dashboard",
-      icon: "mdi:chart-bar",
-      roles: ["buyer", "manager", "admin"],
-    },
-    {
-      title: "Supermarkets",
-      href: "/supermarkets",
-      icon: "mdi:store",
-      roles: ["buyer", "admin"],
-    },
-    {
-      title: "Orders",
-      href: "/orders",
-      icon: "mdi:package",
-      roles: ["buyer", "manager", "admin"],
-    },
-    {
-      title: "Products",
-      href: "/products",
-      icon: "mdi:shopping-bag",
-      roles: ["manager", "admin"],
-    },
-    {
-      title: "Users",
-      href: "/admin/users",
-      icon: "mdi:account-group",
-      roles: ["admin"],
-    },
-    {
-      title: "Supermarket Management",
-      href: "/admin/supermarkets",
-      icon: "mdi:store-cog",
-      roles: ["admin"],
-    },
-    {
-      title: "Cart",
-      href: "/cart",
-      icon: "mdi:cart",
-      roles: ["buyer"],
-    },
-    {
-      title: "Settings",
-      href: "/settings",
-      icon: "mdi:cog",
-      roles: ["buyer", "manager", "admin"],
-    },
-  ]
+    { title: "Home", href: "/", icon: "mdi:home", roles: ["buyer", "manager", "admin"] },
+    { title: "Dashboard", href: "/dashboard", icon: "mdi:chart-bar", roles: ["buyer", "manager", "admin"] },
+    { title: "Supermarkets", href: "/supermarkets", icon: "mdi:store", roles: ["buyer", "admin"] },
+    { title: "Orders", href: "/orders", icon: "mdi:package", roles: ["buyer", "manager", "admin"] },
+    { title: "Products", href: "/products", icon: "mdi:shopping-bag", roles: ["manager", "admin"] },
+    { title: "Users", href: "/admin/users", icon: "mdi:account-group", roles: ["admin"] },
+    { title: "Supermarket Management", href: "/admin/supermarkets", icon: "mdi:store-cog", roles: ["admin"] },
+    { title: "Cart", href: "/cart", icon: "mdi:cart", roles: ["buyer"] },
+    { title: "Settings", href: "/settings", icon: "mdi:cog", roles: ["buyer", "manager", "admin"] },
+  ];
 
-  const filteredNavItems = navItems.filter((item) => item.roles.includes(role))
+  const filteredNavItems = navItems.filter((i) => i.roles.includes(role));
 
   return (
     <>
-      {/* Overlay */}
-      {isOpen && <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={onClose} aria-hidden="true" />}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={onClose}
+          aria-hidden="true"
+        />
+      )}
 
-      {/* Sidebar */}
       <div
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out md:hidden",
-          isOpen ? "translate-x-0" : "-translate-x-full",
+          "fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:hidden",
+          isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         <div className="flex flex-col h-full">
@@ -139,7 +96,7 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                   href={item.href}
                   className={cn(
                     "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
-                    pathname === item.href ? "bg-primary text-primary-foreground" : "hover:bg-muted",
+                    pathname === item.href ? "bg-primary text-primary-foreground" : "hover:bg-muted"
                   )}
                 >
                   <Icon icon={item.icon} className="h-5 w-5" />
@@ -165,5 +122,5 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
         </div>
       </div>
     </>
-  )
+  );
 }
