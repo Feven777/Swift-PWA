@@ -1,36 +1,56 @@
-import Link from "next/link";
-import Image from "next/image";
-import {
-  FileText,
-  Home,
-  MessageSquare,
-  Settings,
-  LogOut,
-  Edit,
-} from "lucide-react";
+"use client"
+
+import { useAuth } from "@/hooks/use-auth"
+import Image from "next/image"
+import Link from "next/link"
+import { FileText, Home, MessageSquare, Settings, LogOut, Edit } from "lucide-react"
 
 interface ProfileSidebarProps {
-  activePage?: "orders" | "preferences" | "support" | "settings";
+  activePage?: "orders" | "preferences" | "support" | "settings"
 }
 
 export default function ProfileSidebar({
   activePage = "orders",
 }: ProfileSidebarProps) {
+  const { user, isLoading, logout } = useAuth()
+
+  // 1) Show spinner while context hydrates
+  if (isLoading) {
+    return (
+      <div className="p-4 flex items-center justify-center">
+        <LogOut className="animate-spin h-6 w-6 text-gray-500" />
+      </div>
+    )
+  }
+
+  // 2) If not logged in, prompt to authenticate
+  if (!user) {
+    return (
+      <div className="p-4 text-center text-red-500">
+        You’re not signed in.{" "}
+        <Link href="/auth" className="text-green-600 hover:underline">
+          Go to login
+        </Link>
+      </div>
+    )
+  }
+
+  // 3) Real sidebar
   return (
     <div className="flex flex-col items-center lg:items-start mb-8 lg:mb-0">
       {/* Profile Info */}
       <div className="flex flex-col items-center mb-6">
         <div className="relative w-24 h-24 mb-3">
           <Image
-            src="/profile2.jpg?height=100&width=100"
-            alt="Profile Picture"
+            src={ user.avatarUrl ?? "/profile2.jpg"}
+            alt={`${user.name}’s avatar`}
             width={100}
             height={100}
             className="rounded-full object-cover border-4 border-red-200 bg-red-200"
           />
         </div>
-        <h2 className="text-xl font-semibold">John Doe</h2>
-        <p className="text-gray-500 text-sm">john.doe@example.com</p>
+        <h2 className="text-xl font-semibold">{user.name}</h2>
+        <p className="text-gray-500 text-sm">{user.email}</p>
         <Link
           href="/profile/edit"
           className="flex items-center text-green-600 mt-2 text-sm"
@@ -100,14 +120,14 @@ export default function ProfileSidebar({
 
       {/* Logout Button */}
       <div className="mt-6 w-full">
-        <Link
-          href="/logout"
+        <button
+          onClick={logout}
           className="flex items-center p-3 text-red-600 hover:bg-gray-100 rounded-md w-full"
         >
           <LogOut className="h-5 w-5 mr-3" />
           Logout
-        </Link>
+        </button>
       </div>
     </div>
-  );
+  )
 }

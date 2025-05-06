@@ -1,8 +1,6 @@
 "use client";
 
-import type React from "react";
-
-import {
+import React, {
   createContext,
   useContext,
   useState,
@@ -26,35 +24,25 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-
   const [totalItems, setTotalItems] = useState(0);
   const [subtotal, setSubtotal] = useState(0);
 
   useEffect(() => {
-    // Calculate total items (sum of quantities)
-    const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-    setTotalItems(itemCount);
-
-    // Calculate subtotal
-    const cartSubtotal = cartItems.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
+    setTotalItems(cartItems.reduce((sum, item) => sum + item.quantity, 0));
+    setSubtotal(
+      cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
     );
-    setSubtotal(cartSubtotal);
   }, [cartItems]);
 
   const addToCart = (item: CartItem) => {
-    const existingItemIndex = cartItems.findIndex(
-      (cartItem) => cartItem.id === item.id
+    const idx = cartItems.findIndex(
+      (ci) => ci.id === item.id && ci.storeId === item.storeId
     );
-
-    if (existingItemIndex >= 0) {
-      // Item exists, update quantity
-      const updatedItems = [...cartItems];
-      updatedItems[existingItemIndex].quantity += item.quantity;
-      setCartItems(updatedItems);
+    if (idx >= 0) {
+      const updated = [...cartItems];
+      updated[idx].quantity += item.quantity;
+      setCartItems(updated);
     } else {
-      // Item doesn't exist, add it
       setCartItems([...cartItems, item]);
     }
   };
@@ -65,15 +53,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const updateQuantity = (id: number, quantity: number) => {
     if (quantity < 1) return;
-
     setCartItems(
-      cartItems.map((item) => (item.id === id ? { ...item, quantity } : item))
+      cartItems.map((item) =>
+        item.id === id ? { ...item, quantity } : item
+      )
     );
   };
 
-  const clearCart = () => {
-    setCartItems([]);
-  };
+  const clearCart = () => setCartItems([]);
 
   return (
     <CartContext.Provider
@@ -94,9 +81,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 }
 
 export function useCart() {
-  const context = useContext(CartContext);
-  if (context === undefined) {
-    throw new Error("useCart must be used within a CartProvider");
-  }
-  return context;
+  const ctx = useContext(CartContext);
+  if (!ctx) throw new Error("useCart must be used within a CartProvider");
+  return ctx;
 }

@@ -20,6 +20,14 @@ interface AuthContextType {
     supermarketName?: string,
   ) => Promise<{ success: boolean; error?: string }>
   logout: () => void
+  updateProfile: (data: UpdateProfilePayload) => Promise<{ success: boolean; error?: string }>
+}
+
+export interface UpdateProfilePayload {
+  name?: string
+  email?: string
+  avatarUrl?: string
+  bio?: string
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -31,18 +39,21 @@ const mockUsers: User[] = [
     name: "Buyer Demo",
     email: "buyer@example.com",
     role: "buyer",
+    avatarUrl: "/profile1.jpg",
   },
   {
     id: "2",
     name: "Manager Demo",
     email: "manager@example.com",
     role: "manager",
+    avatarUrl: "/profile2.jpg",
   },
   {
     id: "3",
     name: "Admin Demo",
     email: "admin@example.com",
     role: "admin",
+    avatarUrl: "/profile1.jpg",
   },
   {
     id: "4",
@@ -50,7 +61,8 @@ const mockUsers: User[] = [
     email: "employee@example.com",
     role: "employee",
     supermarketId: 1,
-    supermarketName: "Fresh Market",
+    supermarketName: "Shola Supermarket",
+    avatarUrl: "/profile2.jpg",
   },
   {
     id: "5",
@@ -58,7 +70,8 @@ const mockUsers: User[] = [
     email: "jane@example.com",
     role: "employee",
     supermarketId: 2,
-    supermarketName: "Super Grocers",
+    supermarketName: "Safeway Supermarket",
+    avatarUrl: "/profile1.jpg",
   },
   {
     id: "6",
@@ -66,7 +79,8 @@ const mockUsers: User[] = [
     email: "mark@example.com",
     role: "employee",
     supermarketId: 3,
-    supermarketName: "Value Mart",
+    supermarketName: "Fresh Corner Market",
+    avatarUrl: "/profile2.jpg",
   },
   {
     id: "7",
@@ -74,7 +88,8 @@ const mockUsers: User[] = [
     email: "chris@example.com",
     role: "employee",
     supermarketId: 4,
-    supermarketName: "Metro Grocery",
+    supermarketName: "Mafi City Mall Supermarket",
+    avatarUrl: "/profile1.jpg",
   },
   {
     id: "8",
@@ -82,7 +97,8 @@ const mockUsers: User[] = [
     email: "alex@example.com",
     role: "employee",
     supermarketId: 5,
-    supermarketName: "City Fresh",
+    supermarketName: "Friendship Supermarket",
+    avatarUrl: "/profile2.jpg",
   },
   {
     id: "9",
@@ -90,7 +106,8 @@ const mockUsers: User[] = [
     email: "sam@example.com",
     role: "employee",
     supermarketId: 6,
-    supermarketName: "Green Basket",
+    supermarketName: "Getfam Supermarket",
+    avatarUrl: "/profile1.jpg",
   },
   {
     id: "10",
@@ -98,7 +115,8 @@ const mockUsers: User[] = [
     email: "jordan@example.com",
     role: "employee",
     supermarketId: 7,
-    supermarketName: "Quick & Fresh",
+    supermarketName: "Zemen Mart",
+    avatarUrl: "/profile2.jpg",
   },
 ]
 
@@ -115,6 +133,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     setIsLoading(false)
   }, [])
+  const updateProfile = async (data: UpdateProfilePayload) => {
+    setIsLoading(true)
+    try {
+      // Simulate network delay
+      await new Promise((res) => setTimeout(res, 500))
+
+      if (!user) {
+        return { success: false, error: "Not authenticated" }
+      }
+
+      const updated: User = { ...user, ...data }
+      // Update localStorage
+      localStorage.setItem("user", JSON.stringify(updated))
+      setUser(updated)
+      return { success: true }
+    } catch (e) {
+      return { success: false, error: "Profile update failed" }
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const login = async (email: string, password: string) => {
     setIsLoading(true)
@@ -196,7 +235,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     router.push("/")
   }
 
-  return <AuthContext.Provider value={{ user, isLoading, login, register, logout }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ user, isLoading, login, register, logout , updateProfile}}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {

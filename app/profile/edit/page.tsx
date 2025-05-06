@@ -1,106 +1,105 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import Image from "next/image";
-import { Camera } from "lucide-react";
+"use client"
+
+import { useState, useEffect } from "react"
+import { useAuth } from "@/hooks/use-auth"
+import { useToast } from "@/hooks/use-toast"
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Button } from "@/components/ui/button"
+import Image from "next/image"
+import { Camera } from "lucide-react"
 import ProfileSidebar from "@/components/profile-sidebar";
 
 export default function EditProfilePage() {
+  const { user, updateProfile, isLoading } = useAuth()
+  const { toast } = useToast()
+
+  // Local form state
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [bio, setBio] = useState("")
+  const [avatarUrl, setAvatarUrl] = useState<string | undefined>(undefined)
+
+  // Initialize form with user data
+  useEffect(() => {
+    if (user) {
+      setName(user.name)
+      setEmail(user.email)
+      setBio(user.bio ?? "")
+      setAvatarUrl(user.avatarUrl)
+    }
+  }, [user])
+
+  const handleSubmit = async () => {
+    const { success, error } = await updateProfile({ name, email, bio, avatarUrl })
+    if (success) {
+      toast({ title: "Profile updated" })
+    } else {
+      toast({ title: "Update failed", description: error, variant: "destructive" })
+    }
+  }
+
+  if (!user) return <div>Please sign in to edit your profile.</div>
+
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-6">
+      <h1 className="text-2xl font-semibold mb-6">Edit Profile</h1>
       <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-8">
-        {/* Import ProfileSidebar component */}
         <div className="hidden lg:block">
-          <ProfileSidebar />
+          <ProfileSidebar activePage="settings" />
         </div>
-
-        <div>
-          <h1 className="text-2xl font-semibold text-gray-800 mb-6">
-            Edit Profile
-          </h1>
-
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Profile Picture</CardTitle>
-                <CardDescription>Update your profile image</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-col items-center sm:flex-row sm:items-start gap-6">
-                  <div className="relative">
-                    <div className="w-32 h-32 rounded-full overflow-hidden bg-red-200">
-                      <Image
-                        src="/profile.jpg?height=128&width=128"
-                        alt="Profile Picture"
-                        width={128}
-                        height={128}
-                        className="object-cover w-full h-full"
-                      />
-                    </div>
-                    <div className="absolute bottom-0 right-0 bg-green-600 rounded-full p-2 cursor-pointer">
-                      <Camera className="h-4 w-4 text-white" />
-                    </div>
-                  </div>
-                  <div className="space-y-4 flex-1">
-                    <div>
-                      <h3 className="font-medium mb-1">Upload a new photo</h3>
-                      <p className="text-sm text-gray-500 mb-3">
-                        Your photo should be in JPG or PNG format
-                      </p>
-                      <div className="flex items-center gap-4">
-                        <Button variant="outline">Choose File</Button>
-                        <Button variant="ghost" className="text-red-600">
-                          Remove
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Basic Information</CardTitle>
-                <CardDescription>
-                  Update your basic profile information
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div>
-                    <Label htmlFor="firstName">First Name</Label>
-                    <Input type="text" id="firstName" defaultValue="John" />
-                  </div>
-                  <div>
-                    <Label htmlFor="lastName">Last Name</Label>
-                    <Input type="text" id="lastName" defaultValue="Doe" />
-                  </div>
-                </div>
-                <div className="mt-4">
-                  <Label htmlFor="bio">Bio</Label>
-                  <Textarea
-                    id="bio"
-                    placeholder="Write a short bio about yourself"
-                    className="mt-1"
-                    defaultValue="A short bio about me."
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Profile Picture</CardTitle>
+              <CardDescription>Update your profile image</CardDescription>
+            </CardHeader>
+            <CardContent className="flex items-center gap-6">
+              <div className="relative">
+                <div className="w-32 h-32 rounded-full overflow-hidden bg-gray-200">
+                  <Image
+                    src={avatarUrl ?? "/profile2.jpg"}
+                    alt="avatar"
+                    width={128}
+                    height={128}
                   />
                 </div>
-              </CardContent>
-            </Card>
+                <div className="absolute bottom-0 right-0 bg-green-600 p-2 rounded-full cursor-pointer">
+                  <Camera className="h-4 w-4 text-white" />
+                </div>
+              </div>
+              {/* You'd wire a file input here to upload and get a new URL */}
+            </CardContent>
+          </Card>
 
-            <Button>Update Profile</Button>
-          </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Basic Information</CardTitle>
+              <CardDescription>Update your basic profile information</CardDescription>
+            </CardHeader>
+            <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <Label htmlFor="name">Full Name</Label>
+                <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
+              </div>
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+              </div>
+              <div className="sm:col-span-2">
+                <Label htmlFor="bio">Bio</Label>
+                <Textarea id="bio" value={bio} onChange={(e) => setBio(e.target.value)} />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Button onClick={handleSubmit} disabled={isLoading}>
+            {isLoading ? "Updating…" : "Update Profile"}
+          </Button>
         </div>
       </div>
     </div>
-  );
+  )
 }

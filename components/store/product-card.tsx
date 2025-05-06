@@ -13,27 +13,29 @@ interface ProductCardProps {
   storeId: number;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, storeId }: ProductCardProps) {
   const { toast } = useToast();
   const { cartItems, addToCart } = useCart();
 
-  // Check if this product is already in the cart
-  const isInCart = cartItems.some((item) => item.id === product.id);
+  const isInCart = cartItems.some(
+    (item) => item.id === product.id && item.storeId === storeId
+  );
 
   const handleAddToCart = () => {
     addToCart({
-      id: product.id,
-      name: product.name,
-      description: product.category, // or use a dedicated 'description' field if you add one
-      price: product.price,
-      quantity: 1,
-      image: product.image || "/placeholder.svg",
+      id:          product.id,
+      name:        product.name,
+      description: product.category,
+      price:       product.price,
+      quantity:    1,
+      image:       product.image || "/placeholder.svg",
+      storeId,  
     });
 
     toast({
-      title: "Added to cart",
+      title:       "Added to cart",
       description: `${product.name} has been added to your cart.`,
-      duration: 3000,
+      duration:    3000,
     });
   };
 
@@ -55,18 +57,17 @@ export function ProductCard({ product }: ProductCardProps) {
           />
         </div>
       </div>
-
       <div className="p-3 flex-1 flex flex-col">
         <div className="flex items-center mb-1">
           <div className="flex text-yellow-400">
             <Star className="h-3 w-3 fill-current" />
           </div>
-          <span className="text-xs text-gray-500 ml-1">{product.rating}</span>
+          <span className="text-xs text-gray-500 ml-1">
+            {product.rating}
+          </span>
         </div>
-
         <h3 className="font-medium text-sm">{product.name}</h3>
         <p className="text-xs text-gray-500 mb-2">{product.category}</p>
-
         <div className="mt-auto flex items-center justify-between">
           <div>
             <span className="font-semibold">
@@ -78,7 +79,6 @@ export function ProductCard({ product }: ProductCardProps) {
               </span>
             )}
           </div>
-
           <Button
             size="sm"
             variant={isInCart ? "outline" : "default"}
