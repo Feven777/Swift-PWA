@@ -27,17 +27,17 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-            <LoyaltyProvider>
-              <CartProvider>
-                <div className="flex flex-col min-h-screen">
-                  <Header />
-                  <div className="flex-1">{children}</div>
-                  <Footer />
-                </div>
+          <LoyaltyProvider>
+            <CartProvider>
+              <div className="flex flex-col min-h-screen">
+                <Header />
+                <div className="flex-1">{children}</div>
+                <Footer />
+              </div>
 
-                <Toaster />
-              </CartProvider>
-            </LoyaltyProvider>
+              <Toaster />
+            </CartProvider>
+          </LoyaltyProvider>
         </Providers>
       </body>
     </html>

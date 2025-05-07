@@ -1,6 +1,10 @@
-import Link from "next/link"
-import { Twitter, Instagram, Youtube, Facebook } from "lucide-react"
-import { Separator } from "@/components/ui/separator"
+import Link from "next/link";
+import { Icon } from '@iconify/react';
+import twitterIcon from '@iconify/icons-fa-brands/twitter';
+import facebookIcon from '@iconify/icons-fa-brands/facebook';
+import instagramIcon from '@iconify/icons-fa-brands/instagram';
+import youtubeIcon from '@iconify/icons-fa-brands/youtube';
+import { Separator } from "@/components/ui/separator";
 
 export function Footer() {
   return (
@@ -11,20 +15,20 @@ export function Footer() {
             <h3 className="font-semibold mb-4">Swift Delivery</h3>
             <p className="text-sm text-gray-600 mb-4">Making grocery delivery simple, fast, and transparent</p>
             <div className="flex space-x-4">
-              <Link href="#" className="text-gray-500 hover:text-gray-700">
-                <Twitter className="h-5 w-5" />
+              <Link href="#" className="text-gray-500 hover:text-gray-700" aria-label="Twitter">
+                <Icon icon={twitterIcon} className="h-5 w-5" />
                 <span className="sr-only">Twitter</span>
               </Link>
-              <Link href="#" className="text-gray-500 hover:text-gray-700">
-                <Facebook className="h-5 w-5" />
+              <Link href="#" className="text-gray-500 hover:text-gray-700" aria-label="Facebook">
+                <Icon icon={facebookIcon} className="h-5 w-5" />
                 <span className="sr-only">Facebook</span>
               </Link>
-              <Link href="#" className="text-gray-500 hover:text-gray-700">
-                <Instagram className="h-5 w-5" />
+              <Link href="#" className="text-gray-500 hover:text-gray-700" aria-label="Instagram">
+                <Icon icon={instagramIcon} className="h-5 w-5" />
                 <span className="sr-only">Instagram</span>
               </Link>
-              <Link href="#" className="text-gray-500 hover:text-gray-700">
-                <Youtube className="h-5 w-5" />
+              <Link href="#" className="text-gray-500 hover:text-gray-700" aria-label="YouTube">
+                <Icon icon={youtubeIcon} className="h-5 w-5" />
                 <span className="sr-only">YouTube</span>
               </Link>
             </div>
@@ -60,12 +64,12 @@ export function Footer() {
             <h3 className="font-semibold mb-4">Help</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/track" className="text-gray-600 hover:text-gray-900">
+                <Link href="/tracking" className="text-gray-600 hover:text-gray-900">
                   Track Order
                 </Link>
               </li>
               <li>
-                <Link href="/delivery-info" className="text-gray-600 hover:text-gray-900">
+                <Link href="/checkout" className="text-gray-600 hover:text-gray-900">
                   Delivery Info
                 </Link>
               </li>
@@ -122,5 +126,5 @@ export function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }

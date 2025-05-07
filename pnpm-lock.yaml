@@ -11,6 +11,9 @@ importers:
       '@hookform/resolvers':
         specifier: ^3.9.1
         version: 3.10.0(react-hook-form@7.56.1(react@19.1.0))
+      '@iconify/icons-fa-brands':
+        specifier: ^1.2.4
+        version: 1.2.4
       '@iconify/react':
         specifier: latest
         version: 6.0.0(react@19.1.0)
@@ -213,6 +216,9 @@ packages:
     resolution: {integrity: sha512-79Dv+3mDF7i+2ajj7SkypSKHhl1cbln1OGavqrsF7p6mbUv11xpqpacPsGDCTRvCSjEEIez2ef1NveSVL3b0Ag==}
     peerDependencies:
       react-hook-form: ^7.0.0
+
+  '@iconify/icons-fa-brands@1.2.4':
+    resolution: {integrity: sha512-MnUUfPhKJ6ECvVNxipBCmyuvJPDgRJcJ1f9nfgv0obikp6D9d6dGtMrR+bw4Gku6Gr/WCnS1e/Qd5gdmXlE84w==}
 
   '@iconify/react@6.0.0':
     resolution: {integrity: sha512-eqNscABVZS8eCpZLU/L5F5UokMS9mnCf56iS1nM9YYHdH8ZxqZL9zyjSwW60IOQFsXZkilbBiv+1paMXBhSQnw==}
@@ -1105,10 +1111,12 @@ packages:
   '@types/d3-timer@3.0.2':
     resolution: {integrity: sha512-Ps3T8E8dZDam6fUyNiMkekK3XUsaUEik+idO9/YjPtfj2qruF8tFBXS7XhtE4iIXBLxhmLjP3SXpLhVf21I9Lw==}
 
-  '@types/node@22.15.3':
-    resolution: {integrity: sha512-lX7HFZeHf4QG/J7tBZqrCAXwz9J5RD56Y6MpP0eJkka8p+K0RY/yBTW7CYFJ4VGCclxqOLKmiGP5juQc6MKgcw==}
   '@types/google.maps@3.58.1':
     resolution: {integrity: sha512-X9QTSvGJ0nCfMzYOnaVs/k6/4L+7F5uCS+4iUmkLEls6J9S/Phv+m/i3mDeyc49ZBgwab3EFO1HEoBY7k98EGQ==}
+
+  '@types/node@22.15.3':
+    resolution: {integrity: sha512-lX7HFZeHf4QG/J7tBZqrCAXwz9J5RD56Y6MpP0eJkka8p+K0RY/yBTW7CYFJ4VGCclxqOLKmiGP5juQc6MKgcw==}
+
   '@types/react-dom@19.1.3':
     resolution: {integrity: sha512-rJXC08OG0h3W6wDMFxQrZF00Kq6qQvw0djHRdzl3U5DnIERz0MRce3WVc7IS6JYBwtaP/DwYtRRjVlvivNveKg==}
     peerDependencies:
@@ -1923,6 +1931,10 @@ snapshots:
   '@hookform/resolvers@3.10.0(react-hook-form@7.56.1(react@19.1.0))':
     dependencies:
       react-hook-form: 7.56.1(react@19.1.0)
+
+  '@iconify/icons-fa-brands@1.2.4':
+    dependencies:
+      '@iconify/types': 2.0.0
 
   '@iconify/react@6.0.0(react@19.1.0)':
     dependencies:
@@ -2795,13 +2807,9 @@ snapshots:
 
   '@types/d3-timer@3.0.2': {}
 
-<<<<<<< HEAD
-  '@types/node@22.15.3':
-=======
   '@types/google.maps@3.58.1': {}
 
-  '@types/node@22.15.2':
->>>>>>> e025b7b6aa4cec858a4f4ee994f5813e70c29a49
+  '@types/node@22.15.3':
     dependencies:
       undici-types: 6.21.0
 

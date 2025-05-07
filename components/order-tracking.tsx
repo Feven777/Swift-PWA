@@ -32,7 +32,7 @@ export default function OrderTracking({
     deliveryPerson: {
       name: "Michael Rodriguez",
       phone: "+251912345678",
-      image: "/delivery-person.png",
+      image: "profile.jpg",
     },
     tracking: {
       distance: "1.5 miles away",
@@ -41,35 +41,35 @@ export default function OrderTracking({
     items: [
       {
         id: 1,
-        name: "Organic Bananas",
+        name: "Bananas",
         qty: 1,
         price: 3.99,
         image: "/banana.png",
       },
       {
         id: 2,
-        name: "Whole Grain Bread",
+        name: "Bread",
         qty: 2,
         price: 4.49,
         image: "/bread.png",
       },
       {
         id: 3,
-        name: "Free Range Eggs (12pk)",
+        name: "Eggs",
         qty: 1,
         price: 5.99,
         image: "/eggs.png",
       },
       {
         id: 4,
-        name: "Organic Milk (1 Gallon)",
+        name: "Organic Milk",
         qty: 1,
         price: 4.99,
         image: "/milk.png",
       },
       {
         id: 5,
-        name: "Avocados (4pk)",
+        name: "Avocados",
         qty: 1,
         price: 6.99,
         image: "/avocado.png",
@@ -243,7 +243,7 @@ export default function OrderTracking({
           </div>
           <div>
             <p className="tracking-order-date">{order.date}</p>
-            <p className="tracking-order-total">${order.total.toFixed(2)}</p>
+            <p className="tracking-order-total">{order.total.toFixed(2)} Br</p>
           </div>
         </div>
 
@@ -377,7 +377,6 @@ export default function OrderTracking({
             </div>
           </div>
         </div>
-
         {/* Order Items */}
         <div className="tracking-items-container">
           <h2 className="tracking-section-title">Order Items</h2>
@@ -386,7 +385,7 @@ export default function OrderTracking({
               <div key={item.id} className="tracking-item">
                 <div className="tracking-item-image">
                   <Image
-                    src={item.image || "/placeholder.svg"}
+                    src={item.image || "/avocado.webp"}
                     alt={item.name}
                     width={64}
                     height={64}
@@ -397,14 +396,14 @@ export default function OrderTracking({
                   <p className="tracking-item-qty">Qty: {item.qty}</p>
                 </div>
                 <div className="tracking-item-price">
-                  ${item.price.toFixed(2)}
+                  {item.price.toFixed(2)} Br
                 </div>
               </div>
             ))}
 
             <div className="tracking-total-row">
               <p>Total</p>
-              <p>${order.total.toFixed(2)}</p>
+              <p>{order.total.toFixed(2)} Br</p>
             </div>
           </div>
         </div>
