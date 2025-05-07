@@ -115,6 +115,17 @@ export default function DeliveryStep() {
                 </h2>
                 <PickupLocationIndicator />
               </div>
+
+              <div className="p-4 border-t flex justify-center space-x-4">
+                <Button
+                  className="px-8 py-2 bg-green-500 hover:bg-green-600"
+                  onClick={() => {
+                    setCurrentStep(2); // Move directly to the payment step for pickup
+                  }}
+                >
+                  Continue to Payment
+                </Button>
+              </div>
             </>
           )}
         </>

@@ -91,13 +91,15 @@ export function Header() {
     { emoji: "🏠", title: "Home", href: `/supermarket/${user?.supermarketId}` },
     { emoji: "📊", title: "Dashboard", href: "/dashboard" },
     { emoji: "📦", title: "Orders", href: "/employee/orders" },
-    { emoji: "🛍️", title: "Products", href: `/supermarket/${user?.supermarketId}/products` },
+    {
+      emoji: "🛍️",
+      title: "Products",
+      href: `/supermarket/${user?.supermarketId}/products`,
+    },
     { emoji: "⚙️", title: "Settings", href: "/settings" },
   ];
-  const sheetNav = role === "buyer"    ? buyerNav
-   : role === "employee"
-    ? employeeNav
-    : adminNav;
+  const sheetNav =
+    role === "buyer" ? buyerNav : role === "employee" ? employeeNav : adminNav;
 
   const sheetBtnClass =
     role === "buyer"
@@ -221,14 +223,14 @@ export function Header() {
               </Button>
             )}
 
-            {role === "buyer" && totalItems > 0 && (
+            {role === "buyer" && (
               <Link
                 href="/cart"
                 className="relative p-2 hover:bg-gray-100 rounded-full"
               >
                 <ShoppingCart className="h-6 w-6" />
                 <span className="absolute -top-1 -right-1 bg-secondary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {totalItems}
+                  {totalItems || 0}
                 </span>
               </Link>
             )}
