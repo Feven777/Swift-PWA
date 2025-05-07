@@ -200,7 +200,7 @@ const products: Product[] = [
 export async function fetchProductsByStore(storeId: number): Promise<Product[]> {
   return new Promise((resolve) => {
     setTimeout(() => {
-      // In a real app, we would filter products by store ID
+      // we would filter products by store ID
       resolve(products)
     }, 800)
   })

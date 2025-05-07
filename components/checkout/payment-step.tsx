@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useCheckout } from "@/context/checkout-context";
 import { Textarea } from "@/components/ui/textarea";
-import { Check, AlertCircle, Loader2 } from "lucide-react";
+import { Check, AlertCircle, Loader2, ShoppingCart } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 export default function PaymentStep() {
@@ -469,7 +469,7 @@ export default function PaymentStep() {
             <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-start">
               <Check className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
               <p className="text-sm text-green-700">
-                Payment verified successfully! You can now place your order.
+                Payment verified successfully! You can now review your order.
               </p>
             </div>
           )}
@@ -507,9 +507,15 @@ export default function PaymentStep() {
               Verifying Payment...
             </>
           ) : paymentVerified ? (
-            "Review Order"
+            <>
+              <ShoppingCart className="mr-2 h-4 w-4" />
+              Review Order
+            </>
           ) : paymentMethod === "cash" ? (
-            "Review Order"
+            <>
+              <ShoppingCart className="mr-2 h-4 w-4" />
+              Review Order
+            </>
           ) : (
             "Verify Payment"
           )}

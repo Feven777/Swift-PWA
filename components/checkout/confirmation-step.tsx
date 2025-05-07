@@ -14,8 +14,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCheckout } from "@/context/checkout-context";
+import { useCart } from "@/context/cart-context"; // Import cart context to fetch cart data
 import { useRouter } from "next/navigation";
-import CheckoutProgress from "@/components/checkout-progress";
 
 // Helper function to format currency in ETB
 const formatCurrency = (amount: number) => {
@@ -33,25 +33,21 @@ export default function ConfirmationStep() {
     pickupTime,
     pickupLocation,
     paymentMethod,
-    paymentMethods,
     selectedCard,
     orderNumber,
     estimatedDelivery,
     setOrderPlaced,
     orderPlaced,
-    cartItems,
-    subtotal,
-    deliveryFee,
-    tax,
-    promoDiscount,
-    total,
+    setOrderNumber,
   } = useCheckout();
+
+  const { cartItems, subtotal } = useCart(); // Fetch cart data from cart context
+  const shipping = deliveryMethod === "delivery" ? 150 : 0; // Shipping fee for delivery
+  const tax = 0.15 * subtotal; // Tax calculation (15% of subtotal)
+  const total = subtotal + shipping + tax; // Total calculation
+
   const router = useRouter();
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
-
-  const selectedPaymentMethod = paymentMethods.find(
-    (method) => method.id === selectedCard
-  );
 
   const handleBack = () => {
     setCurrentStep(2);
@@ -62,28 +58,35 @@ export default function ConfirmationStep() {
 
     // Simulate API call to place order
     setTimeout(() => {
+      // Generate a random order number if not already set
+      if (!orderNumber) {
+        setOrderNumber(`SW-${Math.floor(100000 + Math.random() * 900000)}`);
+      }
       setOrderPlaced(true);
       setIsPlacingOrder(false);
     }, 1500);
   };
 
   const handleTrackOrder = () => {
-    // In a real app, this would navigate to an order tracking page
-    alert(`Tracking order ${orderNumber}`);
+    router.push("/tracking");
   };
 
   const handleContinueShopping = () => {
     router.push("/");
   };
 
-  // Extract user name and email from the delivery address
-  const extractNameFromAddress = () => {
-    // In a real app, you would have proper user data
-    // For now, just return a placeholder name
-    return "John Doe";
-  };
+  // Format the delivery address for display
+  const formatDeliveryAddress = () => {
+    if (!deliveryAddress) return "";
 
-  const userEmail = "customer@example.com";
+    let formatted = deliveryAddress;
+
+    if (deliveryDetails?.apartmentNumber) {
+      formatted += `, ${deliveryDetails.apartmentNumber}`;
+    }
+
+    return formatted;
+  };
 
   // Get pickup location display text
   const getPickupLocationText = () => {
@@ -99,27 +102,71 @@ export default function ConfirmationStep() {
     }
   };
 
-  // Format the delivery address for display
-  const formatDeliveryAddress = () => {
-    if (!deliveryAddress) return "";
-
-    let formatted = deliveryAddress;
-
-    if (deliveryDetails.apartmentNumber) {
-      formatted += `, ${deliveryDetails.apartmentNumber}`;
-    }
-
-    return formatted;
+  // Simple checkout progress display - included directly in the component
+  const renderCheckoutProgress = () => {
+    return (
+      <div className="w-full mb-6">
+        <div className="flex items-center justify-between">
+          <div
+            className={`flex items-center ${
+              currentStep >= 1 ? "text-green-500" : "text-gray-400"
+            }`}
+          >
+            <div
+              className={`h-8 w-8 rounded-full flex items-center justify-center ${
+                currentStep >= 1 ? "bg-green-500 text-white" : "bg-gray-200"
+              }`}
+            >
+              1
+            </div>
+            <span className="ml-2 text-sm font-medium">Delivery</span>
+          </div>
+          <div
+            className={`flex-1 h-1 mx-4 ${
+              currentStep >= 2 ? "bg-green-500" : "bg-gray-200"
+            }`}
+          ></div>
+          <div
+            className={`flex items-center ${
+              currentStep >= 2 ? "text-green-500" : "text-gray-400"
+            }`}
+          >
+            <div
+              className={`h-8 w-8 rounded-full flex items-center justify-center ${
+                currentStep >= 2 ? "bg-green-500 text-white" : "bg-gray-200"
+              }`}
+            >
+              2
+            </div>
+            <span className="ml-2 text-sm font-medium">Payment</span>
+          </div>
+          <div
+            className={`flex-1 h-1 mx-4 ${
+              currentStep >= 3 ? "bg-green-500" : "bg-gray-200"
+            }`}
+          ></div>
+          <div
+            className={`flex items-center ${
+              currentStep >= 3 ? "text-green-500" : "text-gray-400"
+            }`}
+          >
+            <div
+              className={`h-8 w-8 rounded-full flex items-center justify-center ${
+                currentStep >= 3 ? "bg-green-500 text-white" : "bg-gray-200"
+              }`}
+            >
+              3
+            </div>
+            <span className="ml-2 text-sm font-medium">Confirmation</span>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
     <div className="mt-4 md:mt-8">
-      <div className="mb-4 md:mb-6">
-        <CheckoutProgress
-          currentStep={currentStep}
-          setCurrentStep={setCurrentStep}
-        />
-      </div>
+      <div className="mb-4 md:mb-6">{renderCheckoutProgress()}</div>
 
       <div className="mb-4 md:mb-8">
         <h2 className="text-base md:text-xl font-medium mb-3 md:mb-4">
@@ -141,7 +188,7 @@ export default function ConfirmationStep() {
               </p>
               <div className="flex items-center justify-center text-sm text-gray-600 mb-2">
                 <Mail className="h-4 w-4 mr-2 text-gray-500" />
-                <p>Confirmation sent to: {userEmail}</p>
+                <p>Confirmation sent to: customer@example.com</p>
               </div>
               <p className="text-gray-600 text-sm md:text-base">
                 {deliveryMethod === "delivery"
@@ -174,7 +221,7 @@ export default function ConfirmationStep() {
                         {item.quantity}x {item.name}
                       </div>
                       <div className="font-medium">
-                        {formatCurrency(item.price)}
+                        {formatCurrency(item.price * item.quantity)}
                       </div>
                     </div>
                   ))}
@@ -190,21 +237,13 @@ export default function ConfirmationStep() {
                   {deliveryMethod === "delivery" && (
                     <div className="flex justify-between">
                       <span className="text-gray-600">Delivery Fee</span>
-                      <span>{formatCurrency(deliveryFee)}</span>
+                      <span>{formatCurrency(shipping)}</span>
                     </div>
                   )}
                   <div className="flex justify-between">
                     <span className="text-gray-600">Tax</span>
                     <span>{formatCurrency(tax)}</span>
                   </div>
-                  {promoDiscount > 0 && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Discount</span>
-                      <span className="text-green-600">
-                        -{formatCurrency(promoDiscount)}
-                      </span>
-                    </div>
-                  )}
                   <div className="flex justify-between font-medium pt-2">
                     <span>Total</span>
                     <span>{formatCurrency(total)}</span>
@@ -222,12 +261,11 @@ export default function ConfirmationStep() {
                   <div className="text-sm text-gray-600">
                     {deliveryMethod === "delivery" ? (
                       <>
-                        <p>{extractNameFromAddress()}</p>
                         <p>{formatDeliveryAddress()}</p>
-                        {deliveryDetails.contactPhone && (
+                        {deliveryDetails?.contactPhone && (
                           <p>Phone: {deliveryDetails.contactPhone}</p>
                         )}
-                        {deliveryDetails.deliveryInstructions && (
+                        {deliveryDetails?.deliveryInstructions && (
                           <div className="mt-2 p-2 bg-gray-50 rounded-md">
                             <p className="font-medium">
                               Delivery Instructions:
@@ -275,18 +313,10 @@ export default function ConfirmationStep() {
                 <div>
                   <h4 className="font-medium text-sm mb-2">Payment Method</h4>
                   <div className="text-sm text-gray-600">
-                    {paymentMethod === "card" && selectedPaymentMethod && (
-                      <p>
-                        {selectedPaymentMethod.cardType} ending in{" "}
-                        {selectedPaymentMethod.lastFour}
-                      </p>
+                    {paymentMethod === "card" && selectedCard && (
+                      <p>Credit Card ending in {selectedCard.slice(-4)}</p>
                     )}
-                    {paymentMethod === "mobile" && selectedPaymentMethod && (
-                      <p>
-                        {selectedPaymentMethod.mobileBankName} (
-                        {selectedPaymentMethod.mobileNumber})
-                      </p>
-                    )}
+                    {paymentMethod === "mobile" && <p>Mobile Payment</p>}
                     {paymentMethod === "cash" && <p>Cash on Delivery</p>}
                   </div>
                 </div>
@@ -295,6 +325,50 @@ export default function ConfirmationStep() {
           </div>
         ) : (
           <div className="space-y-4 md:space-y-6">
+            {/* Order Summary */}
+            <div className="border rounded-lg p-4 md:p-6 bg-white">
+              <div className="border-b pb-4 mb-4">
+                <div className="flex items-center mb-2">
+                  <ShoppingBag className="h-5 w-5 text-green-500 mr-2" />
+                  <h4 className="font-medium">Ordered item total cost</h4>
+                </div>
+                <div className="space-y-2">
+                  {cartItems.map((item) => (
+                    <div key={item.id} className="flex justify-between text-sm">
+                      <div className="text-gray-700">
+                        {item.quantity}x {item.name}
+                      </div>
+                      <div className="font-medium">
+                        {formatCurrency(item.price * item.quantity)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Subtotal</span>
+                  <span>{formatCurrency(subtotal)}</span>
+                </div>
+                {deliveryMethod === "delivery" && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Delivery Fee</span>
+                    <span>{formatCurrency(shipping)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Tax</span>
+                  <span>{formatCurrency(tax)}</span>
+                </div>
+                <div className="flex justify-between font-medium pt-2">
+                  <span>Total</span>
+                  <span>{formatCurrency(total)}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Delivery/Pickup Method */}
             <div className="border rounded-lg p-3 md:p-4 bg-white">
               <div className="flex items-center gap-3 mb-2 md:mb-3">
                 {deliveryMethod === "delivery" ? (
@@ -315,6 +389,7 @@ export default function ConfirmationStep() {
               </p>
             </div>
 
+            {/* Delivery Time / Pickup Time */}
             <div className="border rounded-lg p-3 md:p-4 bg-white">
               <div className="flex items-center gap-3 mb-2 md:mb-3">
                 <Calendar className="h-4 w-4 md:h-5 md:w-5 text-green-500" />
@@ -329,6 +404,7 @@ export default function ConfirmationStep() {
               </p>
             </div>
 
+            {/* Delivery Address / Pickup Location */}
             <div className="border rounded-lg p-3 md:p-4 bg-white">
               <div className="flex items-center gap-3 mb-2 md:mb-3">
                 <MapPin className="h-4 w-4 md:h-5 md:w-5 text-green-500" />
@@ -340,12 +416,11 @@ export default function ConfirmationStep() {
               </div>
               {deliveryMethod === "delivery" ? (
                 <div className="text-xs md:text-sm text-gray-600 ml-7 md:ml-8">
-                  <p>{extractNameFromAddress()}</p>
                   <p>{formatDeliveryAddress()}</p>
-                  {deliveryDetails.contactPhone && (
+                  {deliveryDetails?.contactPhone && (
                     <p>Phone: {deliveryDetails.contactPhone}</p>
                   )}
-                  {deliveryDetails.deliveryInstructions && (
+                  {deliveryDetails?.deliveryInstructions && (
                     <div className="mt-2 p-2 bg-gray-50 rounded-md">
                       <p className="font-medium">Delivery Instructions:</p>
                       <p>{deliveryDetails.deliveryInstructions}</p>
@@ -368,30 +443,6 @@ export default function ConfirmationStep() {
                 </div>
               )}
             </div>
-
-            <div className="border rounded-lg p-3 md:p-4 bg-white">
-              <div className="flex items-center gap-3 mb-2 md:mb-3">
-                <CreditCard className="h-4 w-4 md:h-5 md:w-5 text-green-500" />
-                <h3 className="font-medium text-sm md:text-base">
-                  Payment Method
-                </h3>
-              </div>
-              <div className="text-xs md:text-sm text-gray-600 ml-7 md:ml-8">
-                {paymentMethod === "card" && selectedPaymentMethod && (
-                  <p>
-                    {selectedPaymentMethod.cardType} ending in{" "}
-                    {selectedPaymentMethod.lastFour}
-                  </p>
-                )}
-                {paymentMethod === "mobile" && selectedPaymentMethod && (
-                  <p>
-                    Mobile Payment: {selectedPaymentMethod.mobileBankName} (
-                    {selectedPaymentMethod.mobileNumber})
-                  </p>
-                )}
-                {paymentMethod === "cash" && <p>Cash on Delivery</p>}
-              </div>
-            </div>
           </div>
         )}
       </div>
@@ -407,7 +458,14 @@ export default function ConfirmationStep() {
               className="bg-green-500 hover:bg-green-600"
               disabled={isPlacingOrder}
             >
-              {isPlacingOrder ? "Processing..." : "Place Order"}
+              {isPlacingOrder ? (
+                <>
+                  <div className="animate-spin mr-2 h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
+                  Processing...
+                </>
+              ) : (
+                "Place Order"
+              )}
             </Button>
           </>
         ) : (
@@ -416,7 +474,7 @@ export default function ConfirmationStep() {
               Continue Shopping
             </Button>
             <Button
-              onClick={() => router.push(`/tracking`)}
+              onClick={handleTrackOrder}
               className="bg-green-500 hover:bg-green-600"
             >
               Track Order
