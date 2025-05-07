@@ -219,13 +219,13 @@ export default function OrderTracking({
   }, []);
 
   const handleCall = () => {
-    // In a real app, this would initiate a call
+    // this would initiate a call
     window.location.href = `tel:${order.deliveryPerson.phone}`;
     setShowContactDialog(false);
   };
 
   const handleSendMessage = () => {
-    // In a real app, this would send the message to the delivery person
+    // this would send the message to the delivery person
     alert(`Message sent: ${message}`);
     setMessage("");
     setShowContactDialog(false);
