@@ -4,20 +4,28 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import "../app/tracking.css";
 
-import {
-  CheckCircle,
-  Package,
-  Truck,
-  Home,
-  Clock,
-  Phone,
-  AlertCircle,
-} from "lucide-react";
+import { CheckCircle, Package, Truck, Home, Clock, Phone } from "lucide-react";
+
+// Define the type for cart items
+type CartItem = {
+  id: number;
+  name: string;
+  quantity: number;
+  price: number;
+  image?: string;
+};
+
+// Define the formatCurrency function
+const formatCurrency = (amount: number): string => {
+  return `${amount.toFixed(2)} Br`;
+};
 
 export default function OrderTracking({
   orderNumber,
+  cartItems = [],
 }: {
   orderNumber: string;
+  cartItems?: CartItem[];
 }) {
   const mapRef = useRef(null);
 
@@ -38,48 +46,11 @@ export default function OrderTracking({
       distance: "1.5 miles away",
       eta: "~20 minutes",
     },
-    items: [
-      {
-        id: 1,
-        name: "Bananas",
-        qty: 1,
-        price: 3.99,
-        image: "/banana.png",
-      },
-      {
-        id: 2,
-        name: "Bread",
-        qty: 2,
-        price: 4.49,
-        image: "/bread.png",
-      },
-      {
-        id: 3,
-        name: "Eggs",
-        qty: 1,
-        price: 5.99,
-        image: "/eggs.png",
-      },
-      {
-        id: 4,
-        name: "Organic Milk",
-        qty: 1,
-        price: 4.99,
-        image: "/milk.png",
-      },
-      {
-        id: 5,
-        name: "Avocados",
-        qty: 1,
-        price: 6.99,
-        image: "/avocado.png",
-      },
-    ],
   });
 
   const [showAddressDialog, setShowAddressDialog] = useState(false);
   const [showContactDialog, setShowContactDialog] = useState(false);
-  const [address, setAddress] = useState("New York");
+  const [address, setAddress] = useState("Addis Ababa");
   const [newAddress, setNewAddress] = useState("");
   const [selectedAddress, setSelectedAddress] = useState("home");
   const [contactTab, setContactTab] = useState("call");
@@ -378,34 +349,27 @@ export default function OrderTracking({
           </div>
         </div>
         {/* Order Items */}
-        <div className="tracking-items-container">
-          <h2 className="tracking-section-title">Order Items</h2>
-          <div>
-            {order.items.map((item) => (
-              <div key={item.id} className="tracking-item">
-                <div className="tracking-item-image">
-                  <Image
-                    src={item.image || "/avocado.webp"}
-                    alt={item.name}
-                    width={64}
-                    height={64}
-                  />
-                </div>
-                <div className="tracking-item-details">
-                  <h3 className="tracking-item-name">{item.name}</h3>
-                  <p className="tracking-item-qty">Qty: {item.qty}</p>
-                </div>
-                <div className="tracking-item-price">
-                  {item.price.toFixed(2)} Br
+        <div className="space-y-2">
+          {cartItems.map((item) => (
+            <div
+              key={item.id}
+              className="flex justify-between items-center text-sm"
+            >
+              <div className="flex items-center gap-3">
+                <img
+                  src={item.image || "/placeholder.svg"} // Ensure the image path is correct
+                  alt={item.name}
+                  className="h-10 w-10 object-cover rounded-md"
+                />
+                <div className="text-gray-700">
+                  {item.quantity}x {item.name}
                 </div>
               </div>
-            ))}
-
-            <div className="tracking-total-row">
-              <p>Total</p>
-              <p>{order.total.toFixed(2)} Br</p>
+              <div className="font-medium">
+                {formatCurrency(item.price * item.quantity)}
+              </div>
             </div>
-          </div>
+          ))}
         </div>
       </main>
 

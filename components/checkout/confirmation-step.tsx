@@ -216,9 +216,19 @@ export default function ConfirmationStep() {
                 </div>
                 <div className="space-y-2">
                   {cartItems.map((item) => (
-                    <div key={item.id} className="flex justify-between text-sm">
-                      <div className="text-gray-700">
-                        {item.quantity}x {item.name}
+                    <div
+                      key={item.id}
+                      className="flex justify-between items-center text-sm"
+                    >
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={item.image || "/placeholder.svg"} // Ensure the image path is correct
+                          alt={item.name}
+                          className="h-10 w-10 object-cover rounded-md"
+                        />
+                        <div className="text-gray-700">
+                          {item.quantity}x {item.name}
+                        </div>
                       </div>
                       <div className="font-medium">
                         {formatCurrency(item.price * item.quantity)}

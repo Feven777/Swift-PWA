@@ -53,7 +53,7 @@ const getOrderById = (id: string) => {
       tax: 3.12,
       delivery: 3.99,
       total: 45.99,
-      address: "123 Main Street, Apt 4B, New York, NY 10001",
+      address: "123 Main Street, Apt 4B, Addis Ababa, NY 10001",
       paymentMethod: "Visa ending in 4242",
       deliveryNotes: "Please leave at the door",
       timeline: [
@@ -129,7 +129,7 @@ const getOrderById = (id: string) => {
       tax: 2.28,
       delivery: 2.99,
       total: 32.75,
-      address: "123 Main Street, Apt 4B, New York, NY 10001",
+      address: "123 Main Street, Apt 4B, Addis Ababa, NY 10001",
       paymentMethod: "Mastercard ending in 8888",
       deliveryNotes: "Call when you arrive",
       timeline: [
@@ -212,7 +212,7 @@ const getOrderById = (id: string) => {
       tax: 4.79,
       delivery: 2.99,
       total: 67.5,
-      address: "123 Main Street, Apt 4B, New York, NY 10001",
+      address: "123 Main Street, Apt 4B, Addis Ababa, NY 10001",
       paymentMethod: "Visa ending in 4242",
       deliveryNotes: "Leave with doorman",
       timeline: [
