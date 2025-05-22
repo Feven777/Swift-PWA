@@ -29,7 +29,7 @@ export function SupermarketDetail({ supermarket }: SupermarketDetailProps) {
       image: "/banana.webp",
       rating: 4.8,
       isOnSale: true,
-      supermarketId: 0,
+      supermarketId: supermarket.id,
     },
     {
       id: 2,
@@ -41,7 +41,7 @@ export function SupermarketDetail({ supermarket }: SupermarketDetailProps) {
       image: "/milk.jpg",
       rating: 4.7,
       isOnSale: false,
-      supermarketId: 0,
+      supermarketId: supermarket.id,
     },
     {
       id: 3,
@@ -53,7 +53,7 @@ export function SupermarketDetail({ supermarket }: SupermarketDetailProps) {
       image: "/bread.jpg",
       rating: 4.6,
       isOnSale: false,
-      supermarketId: 0,
+      supermarketId: supermarket.id,
     },
     {
       id: 4,
@@ -65,7 +65,7 @@ export function SupermarketDetail({ supermarket }: SupermarketDetailProps) {
       image: "/chicken.jpg",
       rating: 4.9,
       isOnSale: false,
-      supermarketId: 0,
+      supermarketId: supermarket.id,
     },
     {
       id: 5,
@@ -77,7 +77,7 @@ export function SupermarketDetail({ supermarket }: SupermarketDetailProps) {
       image: "/avocado.webp",
       rating: 4.7,
       isOnSale: false,
-      supermarketId: 0,
+      supermarketId: supermarket.id,
     },
     {
       id: 6,
@@ -89,7 +89,7 @@ export function SupermarketDetail({ supermarket }: SupermarketDetailProps) {
       image: "/juice.jpg",
       rating: 4.5,
       isOnSale: true,
-      supermarketId: 0,
+      supermarketId: supermarket.id,
     },
     {
       id: 7,
@@ -101,7 +101,7 @@ export function SupermarketDetail({ supermarket }: SupermarketDetailProps) {
       image: "/pizza.png",
       rating: 4.2,
       isOnSale: false,
-      supermarketId: 0,
+      supermarketId: supermarket.id,
     },
     {
       id: 8,
@@ -113,7 +113,7 @@ export function SupermarketDetail({ supermarket }: SupermarketDetailProps) {
       image: "/cereal.jpg",
       rating: 4.0,
       isOnSale: false,
-      supermarketId: 0,
+      supermarketId: supermarket.id,
     },
   ]);
 
