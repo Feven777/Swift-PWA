@@ -76,6 +76,14 @@ export default function OrderTracking({
       isDefault: false,
     },
   ];
+  const handleGetDirections = () => {
+    const encodedAddress = encodeURIComponent(address || "");
+    const name = encodeURIComponent(order.store);
+    window.open(
+      `https://www.google.com/maps/search/?api=1&query=${name}+${encodedAddress}`,
+      "_blank"
+    );
+  };
 
   // Initialize the map
   useEffect(() => {
@@ -332,22 +340,34 @@ export default function OrderTracking({
             </div>
           </div>
         </div>
-
-        {/* Live Tracking */}
         <div className="tracking-map-container">
-          <h2 className="tracking-section-title">Live Tracking</h2>
-          <div className="tracking-map" ref={mapRef}>
-            {/* Map will be rendered here by JavaScript */}
-            <div className="tracking-map-badge tracking-map-badge-left">
-              <div className="tracking-map-indicator"></div>
-              <span>{order.tracking.distance}</span>
-            </div>
-            <div className="tracking-map-badge tracking-map-badge-right">
-              <div className="tracking-map-indicator"></div>
-              <span>Arriving in {order.tracking.eta}</span>
-            </div>
+          <h2 className="tracking-section-title">Store Map</h2>
+          <div className="tracking-map" style={{ position: "relative" }}>
+            <Image
+              src="/store-floorplan.png"
+              alt="Store Floor Plan"
+              layout="responsive"
+              width={800}
+              height={600}
+              className="store-floorplan-image"
+            />
+            {/* Marker example */}
+            <div
+              className="delivery-person-marker"
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "30%",
+                transform: "translate(-50%, -50%)",
+                backgroundColor: "red",
+                borderRadius: "50%",
+                width: "20px",
+                height: "20px",
+              }}
+            />
           </div>
         </div>
+
         {/* Order Items */}
         <div className="space-y-2">
           {cartItems.map((item) => (
