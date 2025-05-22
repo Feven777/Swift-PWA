@@ -19,7 +19,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export default function AddressSelector() {
   const [open, setOpen] = useState(false);
-  const [address, setAddress] = useState("New York");
+  const [address, setAddress] = useState("Addis Ababa");
   const [newAddress, setNewAddress] = useState("");
   const [selectedAddress, setSelectedAddress] = useState("home");
 

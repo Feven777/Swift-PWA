@@ -27,13 +27,13 @@ export default function ContactDeliveryPerson({
   const [activeTab, setActiveTab] = useState("call");
 
   const handleCall = () => {
-    // In a real app, this would initiate a call
+    //  this would initiate a call
     window.location.href = `tel:${phone}`;
     setOpen(false);
   };
 
   const handleSendMessage = () => {
-    // In a real app, this would send the message to the delivery person
+    //  this would send the message to the delivery person
     alert(`Message sent: ${message}`);
     setMessage("");
     setOpen(false);

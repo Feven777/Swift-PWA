@@ -62,7 +62,7 @@ export default function SettingsPage() {
       name: "Home",
       isDefault: true,
       street: "123 Main Street, Apt 4B",
-      city: "New York",
+      city: "Addis Ababa",
       state: "NY",
       zip: "10001",
     },
@@ -71,7 +71,7 @@ export default function SettingsPage() {
       name: "Work",
       isDefault: false,
       street: "456 Business Ave, Floor 10",
-      city: "New York",
+      city: "Addis Ababa",
       state: "NY",
       zip: "10002",
     },
@@ -1497,7 +1497,7 @@ export default function SettingsPage() {
                             <Label htmlFor="new-address-city">City</Label>
                             <Input
                               id="new-address-city"
-                              placeholder="New York"
+                              placeholder="Addis Ababa"
                               value={newAddress.city}
                               onChange={handleNewAddressChange}
                               className={
@@ -1638,7 +1638,7 @@ export default function SettingsPage() {
                             <Label htmlFor="edit-address-city">City</Label>
                             <Input
                               id="edit-address-city"
-                              placeholder="New York"
+                              placeholder="Addis Ababa"
                               value={editAddress.city}
                               onChange={handleEditAddressChange}
                               className={
