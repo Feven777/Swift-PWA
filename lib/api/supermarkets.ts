@@ -1,0 +1,168 @@
+import type { Supermarket } from "@/types/supermarket"
+
+// Ethiopian supermarkets data based on the requirements
+const ethiopianSupermarkets: Supermarket[] = [
+  {
+    id: 1,
+    name: "Shola Supermarket",
+    image: "/supermarket-1.jpg?height=300&width=500",
+    rating: 4.5,
+    reviewCount: 312,
+    distance: 0.8,
+    categories: ["Grocery", "Fresh Produce"],
+    deliveryTimeMin: 15,
+    deliveryTimeMax: 25,
+    deliveryFee: 29.99,
+    plusEnabled: true,
+    description: "Known for fresh produce and affordable groceries.",
+    address: "Bole Road, Addis Ababa",
+    phone: "(123)456-7890",
+    email: "info@shola.com",
+    openingHours: "8AM - 10PM",
+  },
+  {
+    id: 2,
+    name: "Safeway Supermarket",
+    image: "/supermarket-2.jpg?height=300&width=500",
+    rating: 4.7,
+    reviewCount: 428,
+    distance: 1.2,
+    categories: ["Grocery", "Imported"],
+    deliveryTimeMin: 20,
+    deliveryTimeMax: 30,
+    deliveryFee: 39.99,
+    plusEnabled: true,
+    description: "High-quality products with imported goods.",
+    address: "Meskel Square, Addis Ababa",
+    phone: "(123)456-7891",
+    email: "info@safeway.com",
+    openingHours: "8AM - 9PM",
+  },
+  {
+    id: 3,
+    name: "Fresh Corner Market",
+    image: "/supermarket-3.jpg?height=300&width=500",
+    rating: 4.6,
+    reviewCount: 256,
+    distance: 0.5,
+    categories: ["Grocery", "Organic"],
+    deliveryTimeMin: 10,
+    deliveryTimeMax: 20,
+    deliveryFee: 24.99,
+    plusEnabled: false,
+    description: "Specializing in organic and fresh food items.",
+    address: "Kazanchis, Addis Ababa",
+    phone: "(123)456-7892",
+    email: "info@freshcorner.com",
+    openingHours: "7AM - 9PM",
+  },
+  {
+    id: 4,
+    name: "Mafi City Mall Supermarket",
+    image: "/supermarket-4.jpg?height=300&width=500",
+    rating: 4.8,
+    reviewCount: 512,
+    distance: 2.5,
+    categories: ["Grocery", "Retail"],
+    deliveryTimeMin: 25,
+    deliveryTimeMax: 40,
+    deliveryFee: 49.99,
+    plusEnabled: true,
+    description: "A large retail store with diverse product categories.",
+    address: "Bole, Addis Ababa",
+    phone: "(123)456-7893",
+    email: "info@maficity.com",
+    openingHours: "9AM - 10PM",
+  },
+  {
+    id: 5,
+    name: "Friendship Supermarket",
+    image: "/supermarket-5.jpg?height=300&width=500",
+    rating: 4.4,
+    reviewCount: 324,
+    distance: 1.8,
+    categories: ["Grocery", "International"],
+    deliveryTimeMin: 20,
+    deliveryTimeMax: 35,
+    deliveryFee: 34.99,
+    plusEnabled: false,
+    description: "Offers both local and international brands.",
+    address: "Piassa, Addis Ababa",
+    phone: "(123)456-7894",
+    email: "info@friendship.com",
+    openingHours: "8AM - 8PM",
+  },
+  {
+    id: 6,
+    name: "Getfam Supermarket",
+    image: "/supermarket-6.jpg?height=300&width=500",
+    rating: 4.6,
+    reviewCount: 378,
+    distance: 3.2,
+    categories: ["Grocery", "Wholesale"],
+    deliveryTimeMin: 30,
+    deliveryTimeMax: 45,
+    deliveryFee: 44.99,
+    plusEnabled: true,
+    description: "Known for bulk purchases and wholesale pricing.",
+    address: "Mexico Square, Addis Ababa",
+    phone: "(123)456-7895",
+    email: "info@getfam.com",
+    openingHours: "7AM - 9PM",
+  },
+  {
+    id: 7,
+    name: "Zemen Mart",
+    image: "/supermarket-7.jpg?height=300&width=500",
+    rating: 4.3,
+    reviewCount: 198,
+    distance: 1.5,
+    categories: ["Grocery", "Online"],
+    deliveryTimeMin: 15,
+    deliveryTimeMax: 30,
+    deliveryFee: 29.99,
+    plusEnabled: false,
+    description: "A growing supermarket with strong online demand.",
+    address: "Gerji, Addis Ababa",
+    phone: "(123)456-7896",
+    email: "info@zemen.com",
+    openingHours: "8AM - 9PM",
+  },
+  {
+    id: 8,
+    name: "Shoa Supermarket",
+    image: "/supermarket-8.jpg?height=300&width=500",
+    rating: 4.9,
+    reviewCount: 624,
+    distance: 2.0,
+    categories: ["Grocery", "Trusted"],
+    deliveryTimeMin: 20,
+    deliveryTimeMax: 35,
+    deliveryFee: 39.99,
+    plusEnabled: true,
+    description: "One of the largest and most trusted supermarkets in Ethiopia.",
+    address: "Sidist Kilo, Addis Ababa",
+    phone: "(123)456-7897",
+    email: "info@shoa.com",
+    openingHours: "7AM - 10PM",
+  },
+]
+
+// Simulate API call with delay
+export async function fetchSupermarkets(): Promise<Supermarket[]> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(ethiopianSupermarkets)
+    }, 800)
+  })
+}
+
+// Get a single supermarket by ID
+export async function getSupermarketById(id: number): Promise<Supermarket | undefined> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const supermarket = ethiopianSupermarkets.find((s) => s.id === id)
+      resolve(supermarket)
+    }, 300)
+  })
+}
