@@ -1,0 +1,118 @@
+import type { Supermarket } from "@/types/supermarket"
+
+// Mock data for supermarkets
+const mockSupermarkets: Supermarket[] = [
+  {
+    id: 1,
+    name: "Fresh Market",
+    image: "/supermarket-1.jpg?height=300&width=500",
+    rating: 4.7,
+    reviewCount: 324,
+    distance: 0.8,
+    categories: ["Grocery", "Organic"],
+    deliveryTimeMin: 15,
+    deliveryTimeMax: 25,
+    deliveryFee: 29.99,
+    plusEnabled: true,
+  },
+  {
+    id: 2,
+    name: "Organic Harvest",
+    image: "/supermarket-2.jpg?height=300&width=500",
+    rating: 4.7,
+    reviewCount: 324,
+    distance: 0.8,
+    categories: ["Grocery", "Organic", "Bakery"],
+    deliveryTimeMin: 15,
+    deliveryTimeMax: 25,
+    deliveryFee: 29.99,
+    plusEnabled: true,
+  },
+  {
+    id: 3,
+    name: "Fresh Market",
+    image: "/supermarket-3.jpg?height=300&width=500",
+    rating: 4.7,
+    reviewCount: 324,
+    distance: 0.8,
+    categories: ["Grocery", "Organic"],
+    deliveryTimeMin: 15,
+    deliveryTimeMax: 25,
+    deliveryFee: 29.99,
+    plusEnabled: true,
+  },
+  {
+    id: 4,
+    name: "Fresh Market",
+    image: "/supermarket-4.jpg?height=300&width=500",
+    rating: 4.7,
+    reviewCount: 324,
+    distance: 0.8,
+    categories: ["Grocery", "Organic"],
+    deliveryTimeMin: 15,
+    deliveryTimeMax: 25,
+    deliveryFee: 29.99,
+    plusEnabled: true,
+  },
+  {
+    id: 5,
+    name: "Fresh Market",
+    image: "/supermarket-5.jpg?height=300&width=500",
+    rating: 4.7,
+    reviewCount: 324,
+    distance: 0.8,
+    categories: ["Grocery", "Organic"],
+    deliveryTimeMin: 15,
+    deliveryTimeMax: 25,
+    deliveryFee: 29.99,
+    plusEnabled: true,
+  },
+  {
+    id: 6,
+    name: "Fresh Market",
+    image: "/supermarket-6?height=300&width=500",
+    rating: 4.7,
+    reviewCount: 324,
+    distance: 0.8,
+    categories: ["Grocery", "Organic"],
+    deliveryTimeMin: 15,
+    deliveryTimeMax: 25,
+    deliveryFee: 29.99,
+    plusEnabled: true,
+  },
+  {
+    id: 7,
+    name: "Fresh Market",
+    image: "/supermarket-7.jpg?height=300&width=500",
+    rating: 4.7,
+    reviewCount: 324,
+    distance: 0.8,
+    categories: ["Grocery", "Organic"],
+    deliveryTimeMin: 15,
+    deliveryTimeMax: 25,
+    deliveryFee: 29.99,
+    plusEnabled: true,
+  },
+  {
+    id: 8,
+    name: "Fresh Market",
+    image: "/supermarket-8.jpg?height=300&width=500",
+    rating: 4.7,
+    reviewCount: 324,
+    distance: 0.8,
+    categories: ["Grocery", "Organic"],
+    deliveryTimeMin: 15,
+    deliveryTimeMax: 25,
+    deliveryFee: 29.99,
+    plusEnabled: true,
+  },
+]
+
+// Simulate API call with delay
+export async function fetchSupermarkets(): Promise<Supermarket[]> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(mockSupermarkets)
+    }, 800)
+  })
+}
