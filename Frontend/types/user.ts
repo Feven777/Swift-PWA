@@ -9,4 +9,6 @@ export interface User {
   supermarketName?: string
   avatarUrl?: string
   bio?: string           
+  phone?: string
+  address?: string
 }

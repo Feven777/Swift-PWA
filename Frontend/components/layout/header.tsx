@@ -35,7 +35,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useCart } from "@/context/cart-context";
 import AddressSelector from "../address-selector";
-import { Icon } from "@iconify/react/dist/iconify.js";
+import { MobileNav } from "./mobile-nav";
+import { Input } from "@/components/ui/input";
 
 export function Header() {
   const router = useRouter();
@@ -43,10 +44,11 @@ export function Header() {
   const { user, logout } = useAuth();
   const role = user?.role ?? "buyer";
   const isManagerAdmin = role === "manager" || role === "admin";
-  const { totalItems } = useCart();
+  const { totalItems, cartItems } = useCart();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   const toggleMobileSidebar = useCallback(() => {
     setIsMobileSidebarOpen((o) => !o);
@@ -199,7 +201,7 @@ export function Header() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button className="bg-primary hover:bg-primary/90 text-white rounded-full px-4">
-                    <Icon icon="mdi:account" className="h-4 w-4 mr-2" />
+                    <User className="h-4 w-4 mr-2" />
                     <span className="hidden sm:inline-block">{user.name}</span>
                   </Button>
                 </DropdownMenuTrigger>
@@ -218,7 +220,7 @@ export function Header() {
                       router.push("/");
                     }}
                   >
-                    <Icon icon="mdi:logout" className="h-4 w-4 mr-2" />
+                    <LogOut className="h-4 w-4 mr-2" />
                     Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -246,6 +248,10 @@ export function Header() {
           </div>
         </div>
       </header>
+      <MobileNav
+        isOpen={isMobileNavOpen}
+        onClose={() => setIsMobileNavOpen(false)}
+      />
     </>
   );
 }

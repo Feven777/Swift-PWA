@@ -20,6 +20,7 @@ interface OrderContextType {
     completed: boolean,
   ) => Promise<{ success: boolean; allCompleted?: boolean; error?: string }>
   handoffOrder: (orderId: string | number, orderType: OrderType) => Promise<{ success: boolean; error?: string }>
+  addOrder: (order: Order) => Promise<{ success: boolean; error?: string }>
 }
 
 // Create context
@@ -273,6 +274,52 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  // Add notification function
+  const notifyNewOrder = async (order: Order) => {
+    try {
+      // Check if browser supports notifications
+      if (!("Notification" in window)) {
+        console.log("This browser does not support notifications");
+        return;
+      }
+
+      // Request notification permission if not granted
+      if (Notification.permission !== "granted") {
+        const permission = await Notification.requestPermission();
+        if (permission !== "granted") {
+          return;
+        }
+      }
+
+      // Create notification for new order
+      new Notification("New Order Received", {
+        body: `Order #${order.id} from ${order.customerName} - Total: $${order.total.toFixed(2)}`,
+        icon: "/logo.png", // Make sure to add your logo to public folder
+      });
+    } catch (error) {
+      console.error("Error sending notification:", error);
+    }
+  };
+
+  // Add new order
+  const addOrder = async (newOrder: Order) => {
+    try {
+      setOrders((prevOrders) => [...prevOrders, newOrder]);
+      
+      // Notify employees of new order
+      if (user?.role === "employee" && user.supermarketId === newOrder.supermarketId) {
+        await notifyNewOrder(newOrder);
+      }
+      
+      return { success: true };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Failed to add order",
+      };
+    }
+  };
+
   return (
     <OrderContext.Provider
       value={{
@@ -284,6 +331,7 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
         getOrderCountByStatus,
         updateOrderItemStatus,
         handoffOrder,
+        addOrder,
       }}
     >
       {children}
@@ -299,29 +347,29 @@ export function useOrders(options?: {
   refetchInterval?: number
 }) {
   const context = useContext(OrderContext)
-  if (context === undefined) {
+  if (!context) {
     throw new Error("useOrders must be used within an OrderProvider")
   }
 
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [orderData, setOrderData] = useState<Order | undefined>(undefined)
-  const [orderError, setOrderError] = useState<string | null>(null)
-  const [isLoadingOrder, setIsLoadingOrder] = useState(false)
 
   // Filter orders based on options
   useEffect(() => {
     setIsLoading(true)
     let result = [...context.orders]
 
+    // Filter by supermarket ID
     if (options?.supermarketId) {
       result = result.filter((order) => order.supermarketId === options.supermarketId)
     }
 
+    // Filter by status
     if (options?.status) {
       result = result.filter((order) => order.status === options.status)
     }
 
+    // Filter by type
     if (options?.type) {
       result = result.filter((order) => order.type === options.type)
     }
@@ -336,7 +384,7 @@ export function useOrders(options?: {
 
     const intervalId = setInterval(() => {
       // This just triggers a re-render to refresh the filtered orders
-      setFilteredOrders([...filteredOrders])
+      setFilteredOrders((prev) => [...prev])
     }, options.refetchInterval)
 
     return () => clearInterval(intervalId)
@@ -352,44 +400,17 @@ export function useOrders(options?: {
     }, 300)
   }, [])
 
-  // Get order by ID function that follows React hooks rules
-  const getById = useCallback(
-    (orderId: string | number) => {
-      setIsLoadingOrder(true)
-      setOrderError(null)
-
-      try {
-        // Simulate API call with timeout
-        setTimeout(() => {
-          const foundOrder = context.getOrderById(orderId)
-
-          if (foundOrder) {
-            setOrderData(foundOrder)
-          } else {
-            setOrderError("Order not found")
-          }
-
-          setIsLoadingOrder(false)
-        }, 300)
-      } catch (err) {
-        setOrderError(err instanceof Error ? err.message : "An unknown error occurred")
-        setIsLoadingOrder(false)
-      }
-
-      return {
-        data: orderData,
-        isLoading: isLoadingOrder,
-        error: orderError,
-      }
-    },
-    [context, orderData, isLoadingOrder, orderError],
-  )
-
   return {
-    ...context,
     orders: filteredOrders,
     isLoading,
     refetch,
-    getById,
+    claimOrder: context.claimOrder,
+    getOrdersByStatus: context.getOrdersByStatus,
+    getOrderById: context.getOrderById,
+    getOrdersForCurrentSupermarket: context.getOrdersForCurrentSupermarket,
+    getOrderCountByStatus: context.getOrderCountByStatus,
+    updateOrderItemStatus: context.updateOrderItemStatus,
+    handoffOrder: context.handoffOrder,
+    addOrder: context.addOrder,
   }
 }

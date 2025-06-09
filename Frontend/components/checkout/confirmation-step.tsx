@@ -16,6 +16,10 @@ import { Button } from "@/components/ui/button";
 import { useCheckout } from "@/context/checkout-context";
 import { useCart } from "@/context/cart-context"; // Import cart context to fetch cart data
 import { useRouter } from "next/navigation";
+import { useOrders } from "@/hooks/use-orders";
+import { useAuth } from "@/hooks/use-auth";
+import { toast } from "@/hooks/use-toast";
+import type { OrderStatus } from "@/types/order";
 
 // Helper function to format currency in ETB
 const formatCurrency = (amount: number) => {
@@ -42,6 +46,8 @@ export default function ConfirmationStep() {
   } = useCheckout();
 
   const { cartItems, subtotal } = useCart(); // Fetch cart data from cart context
+  const { user } = useAuth();
+  const { addOrder } = useOrders();
   const shipping = deliveryMethod === "delivery" ? 150 : 0; // Shipping fee for delivery
   const tax = 0.15 * subtotal; // Tax calculation (15% of subtotal)
   const total = subtotal + shipping + tax; // Total calculation
@@ -53,18 +59,68 @@ export default function ConfirmationStep() {
     setCurrentStep(2);
   };
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "Please log in to place an order",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsPlacingOrder(true);
 
-    // Simulate API call to place order
-    setTimeout(() => {
+    try {
       // Generate a random order number if not already set
-      if (!orderNumber) {
-        setOrderNumber(`SW-${Math.floor(100000 + Math.random() * 900000)}`);
+      const newOrderNumber = orderNumber || `SW-${Math.floor(100000 + Math.random() * 900000)}`;
+      setOrderNumber(newOrderNumber);
+
+      // Create the order object
+      const newOrder = {
+        id: newOrderNumber,
+        customerId: user.id,
+        customerName: user.name || "Customer",
+        customerEmail: user.email || "",
+        supermarketId: defaultStore.id,
+        supermarketName: defaultStore.name,
+        date: new Date().toISOString(),
+        status: "unclaimed" as OrderStatus,
+        type: deliveryMethod as "pickup" | "delivery",
+        items: cartItems.map(item => ({
+          id: item.id,
+          productId: item.id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          image: item.image || "",
+          completed: false
+        })),
+        total: total,
+        specialInstructions: deliveryDetails?.deliveryInstructions || ""
+      };
+
+      // Add the order to the system
+      const result = await addOrder(newOrder);
+
+      if (result.success) {
+        setOrderPlaced(true);
+        toast({
+          title: "Order Placed Successfully",
+          description: `Your order #${newOrderNumber} has been placed and will be prepared soon.`,
+        });
+      } else {
+        throw new Error(result.error || "Failed to place order");
       }
-      setOrderPlaced(true);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to place order",
+        variant: "destructive",
+      });
+    } finally {
       setIsPlacingOrder(false);
-    }, 1500);
+    }
   };
 
   const handleTrackOrder = () => {

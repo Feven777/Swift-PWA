@@ -2,14 +2,23 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Icon } from "@iconify/react"
 import { cn } from "@/lib/utils"
 import { useAuth } from "@/hooks/use-auth"
+import {
+  Home,
+  BarChart,
+  Store,
+  Package,
+  ShoppingBag,
+  Users,
+  Settings,
+  ShoppingCart,
+} from "lucide-react"
 
 interface NavItem {
   title: string
   href: string
-  icon: string
+  icon: React.ElementType
   roles: string[]
 }
 
@@ -23,68 +32,56 @@ export function Sidebar() {
     {
       title: "Home",
       href: "/",
-      icon: "mdi:home",
-      roles: ["buyer", "manager", "admin", "employee"],
+      icon: Home,
+      roles: ["buyer", "manager", "admin"],
     },
     {
       title: "Dashboard",
       href: "/dashboard",
-      icon: "mdi:chart-bar",
-      roles: ["buyer", "manager", "admin", "employee"],
-    },
-    {
-      title: "Orders",
-      href: "/employee/orders",
-      icon: "mdi:package",
-      roles: ["employee"],
+      icon: BarChart,
+      roles: ["buyer", "manager", "admin"],
     },
     {
       title: "Supermarkets",
       href: "/supermarkets",
-      icon: "mdi:store",
+      icon: Store,
       roles: ["buyer", "admin"],
     },
     {
       title: "Orders",
       href: "/orders",
-      icon: "mdi:package",
+      icon: Package,
       roles: ["buyer", "manager", "admin"],
     },
     {
       title: "Products",
       href: "/products",
-      icon: "mdi:shopping-bag",
+      icon: ShoppingBag,
       roles: ["manager", "admin"],
     },
     {
       title: "Users",
       href: "/admin/users",
-      icon: "mdi:account-group",
+      icon: Users,
       roles: ["admin"],
     },
     {
       title: "Supermarket Management",
       href: "/admin/supermarkets",
-      icon: "mdi:store-cog",
+      icon: Store,
       roles: ["admin"],
     },
     {
       title: "Cart",
       href: "/cart",
-      icon: "mdi:cart",
+      icon: ShoppingCart,
       roles: ["buyer"],
     },
     {
       title: "Settings",
       href: "/settings",
-      icon: "mdi:cog",
+      icon: Settings,
       roles: ["buyer", "manager", "admin"],
-    },
-    {
-      title: "Profile",
-      href: "/employee/profile",
-      icon: "mdi:account-cog",
-      roles: ["employee"],
     },
   ]
   const filteredNavItems = navItems.filter((item) => item.roles.includes(role))
@@ -103,19 +100,22 @@ export function Sidebar() {
       </div>
 
       <div className="flex-1 px-4 space-y-1">
-        {filteredNavItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={cn(
-              "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
-              pathname === item.href ? "bg-primary text-primary-foreground" : "hover:bg-muted",
-            )}
-          >
-            <Icon icon={item.icon} className="h-5 w-5" />
-            {item.title}
-          </Link>
-        ))}
+        {filteredNavItems.map((item) => {
+          const Icon = item.icon
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+                pathname === item.href ? "bg-primary text-primary-foreground" : "hover:bg-muted"
+              )}
+            >
+              <Icon className="h-5 w-5" />
+              {item.title}
+            </Link>
+          )
+        })}
       </div>
     </div>
   )

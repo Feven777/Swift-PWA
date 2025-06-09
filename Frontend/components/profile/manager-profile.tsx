@@ -16,6 +16,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
 import type { User } from "@/types/user"
+import { useAuth } from "@/hooks/use-auth"
+import { User as LucideUser, Mail, Phone, MapPin, Store } from "lucide-react"
 
 interface ManagerProfileProps {
   user: User
@@ -41,6 +43,7 @@ interface ManagerStats {
 
 export function ManagerProfile({ user }: ManagerProfileProps) {
   const { toast } = useToast()
+  const { updateProfile } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
 
@@ -52,7 +55,6 @@ export function ManagerProfile({ user }: ManagerProfileProps) {
     phone: "+251 91 234 5678",
     location: "Addis Ababa, Ethiopia",
   })
-
 
   // Notification preferences
   const [notificationPreferences, setNotificationPreferences] = useState({
@@ -91,16 +93,11 @@ export function ManagerProfile({ user }: ManagerProfileProps) {
     setIsLoading(true)
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // In a real app, you would update the user profile here
-
+      await updateProfile(profileForm)
       toast({
         title: "Profile updated",
         description: "Your profile has been updated successfully.",
       })
-
       setIsEditing(false)
     } catch (error) {
       toast({
@@ -112,8 +109,6 @@ export function ManagerProfile({ user }: ManagerProfileProps) {
       setIsLoading(false)
     }
   }
-
-
 
   // Handle notification preferences submission
   const handleNotificationSubmit = async (e: React.FormEvent) => {
@@ -242,24 +237,31 @@ export function ManagerProfile({ user }: ManagerProfileProps) {
                     <CardDescription>Update your account information and profile details</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="name">Full Name</Label>
+                    <div className="space-y-2">
+                      <Label htmlFor="name">Name</Label>
+                      <div className="relative">
+                        <LucideUser className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input
                           id="name"
                           value={profileForm.name}
                           onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
                           disabled={!isEditing || isLoading}
+                          className="pl-9"
                         />
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email</Label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input
                           id="email"
                           type="email"
                           value={profileForm.email}
                           onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
                           disabled={!isEditing || isLoading}
+                          className="pl-9"
                         />
                       </div>
                     </div>
@@ -275,23 +277,31 @@ export function ManagerProfile({ user }: ManagerProfileProps) {
                       />
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="phone">Phone</Label>
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">Phone</Label>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input
                           id="phone"
+                          type="tel"
                           value={profileForm.phone}
                           onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
                           disabled={!isEditing || isLoading}
+                          className="pl-9"
                         />
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="location">Location</Label>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="location">Location</Label>
+                      <div className="relative">
+                        <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input
                           id="location"
                           value={profileForm.location}
                           onChange={(e) => setProfileForm({ ...profileForm, location: e.target.value })}
                           disabled={!isEditing || isLoading}
+                          className="pl-9"
                         />
                       </div>
                     </div>
@@ -337,20 +347,19 @@ export function ManagerProfile({ user }: ManagerProfileProps) {
                       <p className="text-sm text-muted-foreground">Supermarket Logo</p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="supermarket-name">Supermarket Name</Label>
-                        <Input id="supermarket-name" defaultValue={supermarket.name} disabled={isLoading} />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="supermarket-email">Email</Label>
-                        <Input
-                          id="supermarket-email"
-                          type="email"
-                          defaultValue={supermarket.email}
-                          disabled={isLoading}
-                        />
-                      </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="supermarket-name">Supermarket Name</Label>
+                      <Input id="supermarket-name" defaultValue={supermarket.name} disabled={isLoading} />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="supermarket-email">Email</Label>
+                      <Input
+                        id="supermarket-email"
+                        type="email"
+                        defaultValue={supermarket.email}
+                        disabled={isLoading}
+                      />
                     </div>
 
                     <div className="space-y-2">

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { DashboardLayout } from "@/components/layout/dashboard-layout"
 import { useAuth } from "@/hooks/use-auth"
 import { EmployeeDashboard } from "@/components/dashboard/employee-dashboard"
+import { OrderNotifications } from "@/components/employee/order-notifications"
 
 export default function EmployeePage() {
   const { user, isLoading } = useAuth()
@@ -30,7 +31,11 @@ export default function EmployeePage() {
 
   return (
     <DashboardLayout>
-      <EmployeeDashboard />
+      <div className="space-y-6">
+        <h1 className="text-2xl font-bold">Employee Dashboard</h1>
+        <OrderNotifications />
+        <EmployeeDashboard />
+      </div>
     </DashboardLayout>
   )
 }
