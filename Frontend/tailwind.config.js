@@ -1,10 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./app/**/*.{js,ts,jsx,tsx}", // Include all files in the `app` directory
-    "./components/**/*.{js,ts,jsx,tsx}", // Include all files in the `components` directory
-    "./app/globals.css", // Include your global CSS file
-  ],
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+       "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+       "./components/**/*.{js,ts,jsx,tsx,mdx}",],
   theme: {
     extend: {
       colors: {
