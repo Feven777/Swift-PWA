@@ -59,8 +59,12 @@ export default function StoresNearYou() {
       } else if (activeFilter === "rated") {
         return b.rating - a.rating;
       } else if (activeFilter === "discounts") {
-        const aDisc = a.discount ? parseInt(a.discount.match(/\d+/)?.[0] || "0") : 0;
-        const bDisc = b.discount ? parseInt(b.discount.match(/\d+/)?.[0] || "0") : 0;
+        const aDisc = a.discount
+          ? parseInt(a.discount.match(/\d+/)?.[0] || "0")
+          : 0;
+        const bDisc = b.discount
+          ? parseInt(b.discount.match(/\d+/)?.[0] || "0")
+          : 0;
         return bDisc - aDisc;
       }
       return 0;
@@ -156,7 +160,11 @@ export default function StoresNearYou() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {sortedStores.map((store) => (
-            <Link href={`/supermarket/${store.id}`} key={store.id} className="block">
+            <Link
+              href={`/supermarket/${store.id}`}
+              key={store.id}
+              className="block"
+            >
               <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex p-4">
                   <div className="flex-shrink-0 mr-4">
@@ -178,7 +186,9 @@ export default function StoresNearYou() {
                     </div>
                     <div className="flex items-center mt-1 text-sm text-gray-500">
                       <Clock className="h-4 w-4 mr-1" />
-                      <span>{store.deliveryTimeMin}-{store.deliveryTimeMax} min</span>
+                      <span>
+                        {store.deliveryTimeMin}-{store.deliveryTimeMax} min
+                      </span>
                       <span className="mx-1">•</span>
                       <MapPin className="h-4 w-4 mr-1" />
                       <span>{store.distance} km</span>
