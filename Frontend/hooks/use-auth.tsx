@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import type React from "react"; //import
 import { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import type { User } from "@/types/user";
