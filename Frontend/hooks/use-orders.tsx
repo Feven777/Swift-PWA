@@ -440,7 +440,7 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       };
     }
   };
->>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
+
 
   return (
     <OrderContext.Provider
@@ -481,28 +481,17 @@ export function useOrders(options?: {
     setIsLoading(true);
     let result = [...context.orders];
 
-<<<<<<< HEAD
-=======
-    // Filter by supermarket ID
->>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
     if (options?.supermarketId) {
       result = result.filter(
         (order) => order.supermarketId === options.supermarketId
       );
     }
 
-<<<<<<< HEAD
-=======
-    // Filter by status
->>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
     if (options?.status) {
       result = result.filter((order) => order.status === options.status);
     }
 
-<<<<<<< HEAD
-=======
     // Filter by type
->>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
     if (options?.type) {
       result = result.filter((order) => order.type === options.type);
     }
