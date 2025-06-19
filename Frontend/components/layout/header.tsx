@@ -36,6 +36,7 @@ import {
 import { useCart } from "@/context/cart-context";
 import AddressSelector from "../address-selector";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import SearchBar from "@/components/SearchBar";
 
 export function Header() {
   const router = useRouter();
@@ -46,7 +47,6 @@ export function Header() {
   const isManagerAdmin = role === "manager" || role === "admin";
   const { totalItems } = useCart();
 
-  const [searchQuery, setSearchQuery] = useState("");
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   const toggleMobileSidebar = useCallback(() => {
@@ -56,12 +56,6 @@ export function Header() {
     setIsMobileSidebarOpen(false);
   }, []);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-    }
-  };
   const handleLoginClick = () => {
     router.push("/auth");
   };
@@ -180,22 +174,7 @@ export function Header() {
           </div>
           {/* Search */}
           <div className="flex-1 max-w-xl mx-4">
-            <form onSubmit={handleSearch} className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-              <input
-                type="text"
-                className="w-full pl-10 pr-12 py-2 border rounded-full"
-                placeholder="Search for groceries, brands, or categories..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <button
-                type="submit"
-                className="absolute right-3 top-1/2 transform -translate-y-1/2"
-              >
-                <ArrowRight className="h-5 w-5 text-green-600" />
-              </button>
-            </form>
+            <SearchBar />
           </div>
           {/* Account Dropdown & Cart */}
           <div className="flex items-center gap-2">

@@ -8,15 +8,14 @@ import { SupermarketCard } from "@/components/supermarkets/supermarket-card"
 import { Skeleton } from "@/components/ui/skeleton"
 import type { Supermarket } from "@/types/supermarket"
 import { fetchSupermarkets } from "@/lib/api/supermarkets"
-import { useSearchParams } from "next/navigation"
 
-export function Supermarkets() {
-  const searchParams = useSearchParams()
-  const queryParam = searchParams.get("q")
+interface SupermarketsProps {
+  searchQuery: string;
+}
 
+export function Supermarkets({ searchQuery }: SupermarketsProps) {
   const [supermarkets, setSupermarkets] = useState<Supermarket[]>([])
   const [filteredSupermarkets, setFilteredSupermarkets] = useState<Supermarket[]>([])
-  const [searchQuery, setSearchQuery] = useState(queryParam || "")
   const [distanceFilter, setDistanceFilter] = useState<string>("All")
   const [priceFilter, setPriceFilter] = useState<string>("All")
   const [categoryFilter, setCategoryFilter] = useState<string>("All")
@@ -39,12 +38,6 @@ export function Supermarkets() {
 
     loadSupermarkets()
   }, [])
-
-  useEffect(() => {
-    if (queryParam) {
-      setSearchQuery(queryParam)
-    }
-  }, [queryParam])
 
   useEffect(() => {
     applyFilters()
