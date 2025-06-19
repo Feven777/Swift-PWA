@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useLoyalty } from "@/context/loyalty-context";
+import { useCart } from "@/context/cart-context";
 import { toast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
-import { Plus, Minus, X, ShoppingCart, PlusCircle } from "lucide-react";
+import { Plus, Minus, X, ShoppingCart, PlusCircle, Search } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -18,525 +19,380 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-// Sample product data for adding to orders
-const availableProducts = [
-  {
-    id: 101,
-    name: "Organic Bananas",
-    price: 3.99,
-    image: "/banana.webp?height=40&width=40",
-  },
-  {
-    id: 102,
-    name: "Whole Milk",
-    price: 4.5,
-    image: "/milk.jpg?height=40&width=40",
-  },
-  {
-    id: 103,
-    name: "Sourdough Bread",
-    price: 5.99,
-    image: "/bread.jpg?height=40&width=40",
-  },
-  {
-    id: 104,
-    name: "Avocados",
-    price: 6.99,
-    image: "/avocado.webp?height=40&width=40",
-  },
-  {
-    id: 105,
-    name: "Chicken Breast",
-    price: 12.99,
-    image: "/chicken.jpg?height=40&width=40",
-  },
-  {
-    id: 106,
-    name: "Brown Rice",
-    price: 4.99,
-    image: "apple.jpg?height=40&width=40",
-  },
-  {
-    id: 107,
-    name: "Carrot",
-    price: 2.99,
-    image: "/carrot.jpg?height=40&width=40",
-  },
-  {
-    id: 108,
-    name: "Olive Oil",
-    price: 8.99,
-    image: "/egg.jpg?height=40&width=40",
-  },
-  {
-    id: 109,
-    name: "Greek Yogurt",
-    price: 5.49,
-    image: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: 110,
-    name: "Salmon Fillet",
-    price: 15.99,
-    image: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: 111,
-    name: "Quinoa",
-    price: 6.99,
-    image: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: 112,
-    name: "Asparagus",
-    price: 4.99,
-    image: "/placeholder.svg?height=40&width=40",
-  },
-];
-
-// Sample order data with item images
-const initialOrders = [
-  {
-    id: "12345",
-    date: "March 25, 2025 at 2:30 PM",
-    items: [
-      {
-        id: 101,
-        name: "Organic Bananas",
-        quantity: 1,
-        price: 3.99,
-        image: "/banana.webp?height=40&width=40",
-      },
-      {
-        id: 102,
-        name: "Whole Milk",
-        quantity: 2,
-        price: 4.5,
-        image: "/milk.jpg?height=40&width=40",
-      },
-      {
-        id: 103,
-        name: "Sourdough Bread",
-        quantity: 1,
-        price: 5.99,
-        image: "/bread.jpg?height=40&width=40",
-      },
-      {
-        id: 104,
-        name: "Avocados",
-        quantity: 3,
-        price: 6.99,
-        image: "/avocado.webp?height=40&width=40",
-      },
-    ],
-    totalItems: 4,
-    totalPrice: 45.99,
-    status: "Completed",
-    pointsValue: 15,
-  },
-  {
-    id: "12346",
-    date: "March 20, 2025 at 11:15 AM",
-    items: [
-      {
-        id: 105,
-        name: "Chicken Breast",
-        quantity: 1,
-        price: 12.99,
-        image: "/chicken.jpg?height=40&width=40",
-      },
-      {
-        id: 106,
-        name: "Brown Rice",
-        quantity: 1,
-        price: 4.99,
-        image: "/rice.jpg?height=40&width=40",
-      },
-      {
-        id: 107,
-        name: "Snacks",
-        quantity: 2,
-        price: 2.99,
-        image: "/snaks.jpg?height=40&width=40",
-      },
-      {
-        id: 108,
-        name: "Apple",
-        quantity: 1,
-        price: 8.99,
-        image: "/apple.jpg?height=40&width=40",
-      },
-      {
-        id: 109,
-        name: "Greek Yogurt",
-        quantity: 1,
-        price: 5.49,
-        image: "/yoghurt.webp?height=40&width=40",
-      },
-    ],
-    totalItems: 5,
-    totalPrice: 32.75,
-    status: "Completed",
-    pointsValue: 10,
-  },
-  {
-    id: "12347",
-    date: "March 15, 2025 at 4:45 PM",
-    items: [
-      {
-        id: 110,
-        name: "Water",
-        quantity: 2,
-        price: 15.99,
-        image: "/water.jpg?height=40&width=40",
-      },
-      {
-        id: 111,
-        name: "Onion",
-        quantity: 1,
-        price: 6.99,
-        image: "/onion.jpg?height=40&width=40",
-      },
-      {
-        id: 112,
-        name: "Juice",
-        quantity: 1,
-        price: 4.99,
-        image: "/juice.jpg?height=40&width=40",
-      },
-      {
-        id: 113,
-        name: "Carrot",
-        quantity: 3,
-        price: 0.99,
-        image: "/carrot.jpg?height=40&width=40",
-      },
-      {
-        id: 114,
-        name: "Canned",
-        quantity: 1,
-        price: 1.99,
-        image: "/canned.webp?height=40&width=40",
-      },
-      {
-        id: 115,
-        name: "Pasta",
-        quantity: 1,
-        price: 14.99,
-        image: "/pasta.jpgheight=40&width=40",
-      },
-    ],
-    totalItems: 6,
-    totalPrice: 67.5,
-    status: "Completed",
-    pointsValue: 20,
-  },
-];
+import { useOrders } from "@/hooks/use-orders";
+import { useAuth } from "@/hooks/use-auth";
+import type { Order, OrderItem } from "@/types/order";
 
 export default function OrdersList() {
-  const [orders, setOrders] = useState(initialOrders);
   const router = useRouter();
+  const { user } = useAuth();
+  const { orders } = useOrders();
+  const { addToCart } = useCart();
   const { addPoints } = useLoyalty();
 
-  // State for order dialog
+  // State for dialogs
   const [orderDialogOpen, setOrderDialogOpen] = useState(false);
-  const [currentOrder, setCurrentOrder] = useState<any>(null);
-  const [orderItems, setOrderItems] = useState<any[]>([]);
+  const [newOrderDialogOpen, setNewOrderDialogOpen] = useState(false);
+  const [reorderDialogOpen, setReorderDialogOpen] = useState(false);
+  const [currentOrder, setCurrentOrder] = useState<Order | null>(null);
+  const [reorderItems, setReorderItems] = useState<OrderItem[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [isNewOrder, setIsNewOrder] = useState(false);
+  const [newOrderItems, setNewOrderItems] = useState<OrderItem[]>([]);
+  const [productSearchTerm, setProductSearchTerm] = useState("");
 
-  // Calculate total price
-  const calculateTotal = (items: any[]) => {
-    return new Intl.NumberFormat("en-ET", {
-      style: "currency",
-      currency: "ETB",
-      currencyDisplay: "symbol", // Use "Br" symbol
-    }).format(
-      items.reduce((total, item) => total + item.price * item.quantity, 0)
+  // Filter orders for the current user
+  const userOrders = orders
+    .filter((order) => order.customerId === user?.id)
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  // Get unique products from previous orders
+  const uniqueProducts = Array.from(
+    new Map(
+      userOrders
+        .flatMap((order) => order.items)
+        .map((item) => [`${item.productId}`, item])
+    ).values()
+  );
+
+  // Calculate total for reorder items
+  const calculateReorderTotal = () => {
+    return reorderItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
     );
   };
 
-  // Function to handle reordering
-  const handleReorder = (orderId: string) => {
-    // Find the order to reorder
-    const orderToReorder = orders.find((order) => order.id === orderId);
-
-    if (orderToReorder) {
-      // Set current order and items for the dialog
-      setCurrentOrder(orderToReorder);
-      setOrderItems([...orderToReorder.items]);
-      setIsNewOrder(false);
+  // Handle viewing order details
+  const handleViewDetails = (orderId: string) => {
+    const order = userOrders.find((o) => o.id === orderId);
+    if (order) {
+      setCurrentOrder(order);
       setOrderDialogOpen(true);
     }
   };
 
-  // Function to start a new order
-  const handleNewOrder = () => {
-    setCurrentOrder(null);
-    setOrderItems([]);
-    setIsNewOrder(true);
-    setOrderDialogOpen(true);
+  // Handle initiating reorder
+  const handleReorderClick = (orderId: string) => {
+    const order = userOrders.find((o) => o.id === orderId);
+    if (!order) return;
+
+    setReorderItems(order.items.map((item) => ({ ...item })));
+    setReorderDialogOpen(true);
   };
 
-  // Function to update item quantity
-  const updateQuantity = (itemId: number, change: number) => {
-    setOrderItems(
-      (prevItems) =>
-        prevItems
-          .map((item) => {
-            if (item.id === itemId) {
-              const newQuantity = Math.max(0, item.quantity + change);
-              return { ...item, quantity: newQuantity };
-            }
-            return item;
-          })
-          .filter((item) => item.quantity > 0) // Remove items with quantity 0
+  // Handle quantity change in reorder
+  const handleQuantityChange = (productId: number, change: number) => {
+    setReorderItems((prev) =>
+      prev
+        .map((item) => {
+          if (item.productId === productId) {
+            const newQuantity = Math.max(0, item.quantity + change);
+            return { ...item, quantity: newQuantity };
+          }
+          return item;
+        })
+        .filter((item) => item.quantity > 0)
     );
   };
 
-  // Function to remove item
-  const removeItem = (itemId: number) => {
-    setOrderItems((prevItems) =>
-      prevItems.filter((item) => item.id !== itemId)
+  // Handle removing item from reorder
+  const handleRemoveReorderItem = (productId: number) => {
+    setReorderItems((prev) =>
+      prev.filter((item) => item.productId !== productId)
     );
   };
 
-  // Function to add new product
-  const addProduct = (product: any) => {
-    // Check if product already exists in the order
-    const existingItem = orderItems.find((item) => item.id === product.id);
-
-    if (existingItem) {
-      // Increase quantity if already in cart
-      updateQuantity(product.id, 1);
-    } else {
-      // Add new item with quantity 1
-      setOrderItems((prevItems) => [...prevItems, { ...product, quantity: 1 }]);
+  // Handle placing modified order
+  const handlePlaceModifiedOrder = () => {
+    if (reorderItems.length === 0) {
+      toast({
+        title: "No items selected",
+        description: "Please add items to your order before proceeding.",
+        variant: "destructive",
+      });
+      return;
     }
 
-    toast({
-      title: "Product added",
-      description: `${product.name} added to your order.`,
+    // Add items to cart
+    reorderItems.forEach((item) => {
+      addToCart({
+        id: item.productId,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        image: item.image,
+      });
+    });
+
+    setReorderDialogOpen(false);
+    setReorderItems([]);
+    router.push("/cart");
+  };
+
+  // Handle adding item to new order
+  const handleAddToNewOrder = (item: OrderItem) => {
+    setNewOrderItems((prev) => {
+      const existing = prev.find((i) => i.productId === item.productId);
+      if (existing) {
+        return prev.map((i) =>
+          i.productId === item.productId
+            ? { ...i, quantity: i.quantity + 1 }
+            : i
+        );
+      }
+      return [...prev, { ...item, quantity: 1 }];
     });
   };
 
-  // Function to place the order
-  const placeOrder = () => {
-    if (orderItems.length > 0) {
-      // Calculate new total price
-      const newTotalPrice = Number.parseFloat(calculateTotal(orderItems));
-
-      // Calculate points based on new total (1 point per $3 spent)
-      const pointsEarned = Math.floor(newTotalPrice / 3);
-
-      // Add loyalty points
-      addPoints(pointsEarned);
-
-      // Create new order ID
-      const newOrderId = `${Math.floor(10000 + Math.random() * 90000)}`;
-
-      // Add new order to the list
-      const newOrder = {
-        id: newOrderId,
-        date: new Date().toLocaleString("am-ET", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "numeric",
-          minute: "numeric",
-          hour12: true,
-        }),
-        items: orderItems,
-        totalItems: orderItems.length,
-        totalPrice: newTotalPrice,
-        status: "Processing",
-        pointsValue: pointsEarned,
-      };
-
-      setOrders((prevOrders) => [newOrder, ...prevOrders]);
-
-      // Close dialog
-      setOrderDialogOpen(false);
-      setCurrentOrder(null);
-      setOrderItems([]);
-      setIsNewOrder(false);
-
-      // Show toast notification
+  // Handle placing new order
+  const handlePlaceOrder = () => {
+    if (newOrderItems.length === 0) {
       toast({
-        title: "Order placed successfully!",
-        description: `You earned ${pointsEarned} loyalty points for this order.`,
-        action: <ToastAction altText="View Points">View Points</ToastAction>,
+        title: "No items selected",
+        description: "Please add items to your order before proceeding.",
+        variant: "destructive",
       });
+      return;
     }
-  };
 
-  // Function to handle viewing order details
-  const handleViewDetails = (orderId: string) => {
-    router.push(`/orders/${orderId}`);
+    // Add items to cart
+    newOrderItems.forEach((item) => {
+      addToCart({
+        id: item.productId,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        image: item.image,
+      });
+    });
+
+    setNewOrderDialogOpen(false);
+    setNewOrderItems([]);
+    router.push("/cart");
   };
 
   // Filter products based on search term
-  const filteredProducts = availableProducts.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredProducts = uniqueProducts.filter((product) =>
+    product.name.toLowerCase().includes(productSearchTerm.toLowerCase())
   );
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Your Orders</h2>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold">Your Orders</h2>
         <Button
-          onClick={handleNewOrder}
-          className="bg-green-600 hover:bg-green-700"
+          variant="default"
+          className="bg-green-500 hover:bg-green-600 text-white"
+          onClick={() => setNewOrderDialogOpen(true)}
         >
-          <PlusCircle className="h-4 w-4 mr-2" />
-          New Order
+          <PlusCircle className="w-4 h-4 mr-2" /> New Order
         </Button>
       </div>
 
-      {orders.map((order) => (
-        <div
-          key={order.id}
-          className="border rounded-lg bg-white p-4 shadow-sm"
-        >
-          <div className="flex justify-between items-start mb-2">
-            <div>
-              <h3 className="font-semibold text-lg">Order #{order.id}</h3>
-              <p className="text-gray-500 text-sm">{order.date}</p>
-            </div>
-            <span
-              className={`px-3 py-1 rounded-full text-sm ${
-                order.status === "Completed"
-                  ? "bg-green-100 text-green-800"
-                  : order.status === "Processing"
-                  ? "bg-blue-100 text-blue-800"
-                  : "bg-yellow-100 text-yellow-800"
-              }`}
+      <div className="space-y-4">
+        {userOrders
+          .filter((order) =>
+            order.items.some((item) =>
+              item.name.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+          )
+          .map((order) => (
+            <div
+              key={order.id}
+              className="border rounded-lg p-4 bg-white shadow-sm"
             >
-              {order.status}
-            </span>
-          </div>
-
-          <div className="flex items-center my-3">
-            <div className="flex flex-wrap gap-2">
-              {order.items.slice(0, 4).map((item, i) => (
-                <div
-                  key={i}
-                  className="w-10 h-10 rounded-md overflow-hidden border border-gray-200"
-                >
-                  <Image
-                    src={item.image || "/placeholder.svg"}
-                    alt={item.name}
-                    width={40}
-                    height={40}
-                    className="object-cover"
-                  />
-                </div>
-              ))}
-            </div>
-            <span className="ml-3 text-sm text-gray-600">
-              {order.totalItems} items
-            </span>
-          </div>
-
-          <div className="flex justify-between items-center mt-4">
-            <div>
-              <span className="font-bold text-lg">
-                {new Intl.NumberFormat("en-ET", {
-                  style: "currency",
-                  currency: "ETB",
-                  currencyDisplay: "symbol", // Use "Br" symbol
-                }).format(order.totalPrice)}
-              </span>
-              <button
-                onClick={() => handleViewDetails(order.id)}
-                className="block text-green-600 text-sm hover:underline"
-              >
-                View details
-              </button>
-            </div>
-            <Button
-              className="bg-orange-500 hover:bg-orange-600"
-              onClick={() => handleReorder(order.id)}
-            >
-              Reorder
-            </Button>
-          </div>
-        </div>
-      ))}
-
-      {/* Order Dialog */}
-      <Dialog open={orderDialogOpen} onOpenChange={setOrderDialogOpen}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>
-              {isNewOrder ? "Create New Order" : "Modify Order"}
-            </DialogTitle>
-            <DialogDescription>
-              {isNewOrder
-                ? "Add products to your new order."
-                : "Review and modify your order before placing it."}
-            </DialogDescription>
-          </DialogHeader>
-
-          <Tabs
-            defaultValue={orderItems.length > 0 ? "current" : "browse"}
-            className="mt-4"
-          >
-            <TabsList className="grid grid-cols-2 w-full">
-              <TabsTrigger value="current">
-                Your Items ({orderItems.length})
-              </TabsTrigger>
-              <TabsTrigger value="browse">Browse Products</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="current" className="space-y-4 mt-4">
-              {orderItems.length === 0 ? (
-                <div className="text-center py-8 border rounded-md border-dashed">
-                  <p className="text-gray-500">No items in your order</p>
-                  <p className="text-sm text-gray-400 mt-2">
-                    Browse products to add items to your order
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <h3 className="font-semibold">Order #{order.id}</h3>
+                  <p className="text-sm text-gray-500">
+                    {new Date(order.date).toLocaleString()}
                   </p>
                 </div>
-              ) : (
-                <div className="border rounded-md divide-y">
-                  {orderItems.map((item) => (
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm ${
+                      order.status === "completed"
+                        ? "bg-green-100 text-green-800"
+                        : order.status === "cancelled"
+                        ? "bg-red-100 text-red-800"
+                        : "bg-yellow-100 text-yellow-800"
+                    }`}
+                  >
+                    {order.status.charAt(0).toUpperCase() +
+                      order.status.slice(1)}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 mb-3">
+                {order.items.slice(0, 4).map((item) => (
+                  <div key={item.id} className="relative w-12 h-12">
+                    <Image
+                      src={item.image}
+                      alt={item.name}
+                      fill
+                      className="rounded object-cover"
+                    />
+                  </div>
+                ))}
+                {order.items.length > 4 && (
+                  <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded">
+                    <span className="text-sm text-gray-600">
+                      +{order.items.length - 4}
+                    </span>
+                  </div>
+                )}
+                <span className="ml-2 text-sm text-gray-600">
+                  {order.items.length} items
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => handleViewDetails(order.id)}
+                    className="text-green-600 hover:text-green-700 text-sm font-medium"
+                  >
+                    View details
+                  </button>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className="font-semibold">
+                    ETB {order.total.toFixed(2)}
+                  </span>
+                  <Button
+                    onClick={() => handleReorderClick(order.id)}
+                    className="bg-orange-500 hover:bg-orange-600 text-white"
+                  >
+                    Reorder
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ))}
+      </div>
+
+      <Dialog open={orderDialogOpen} onOpenChange={setOrderDialogOpen}>
+        {currentOrder && (
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Order Details #{currentOrder.id}</DialogTitle>
+              <DialogDescription>
+                {new Date(currentOrder.date).toLocaleString()}
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <h4 className="font-medium">Items</h4>
+                <div className="space-y-2">
+                  {currentOrder.items.map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-center justify-between p-3"
+                      className="flex items-center justify-between p-2 bg-gray-50 rounded"
                     >
-                      <div className="flex items-center space-x-3">
-                        <div className="w-12 h-12 rounded-md overflow-hidden border border-gray-200">
-                          <Image
-                            src={item.image || "/placeholder.svg"}
-                            alt={item.name}
-                            width={48}
-                            height={48}
-                            className="object-cover"
-                          />
-                        </div>
+                      <div className="flex items-center gap-3">
+                        <Image
+                          src={item.image}
+                          alt={item.name}
+                          width={50}
+                          height={50}
+                          className="rounded"
+                        />
                         <div>
                           <p className="font-medium">{item.name}</p>
                           <p className="text-sm text-gray-500">
-                            {new Intl.NumberFormat("en-ET", {
-                              style: "currency",
-                              currency: "ETB",
-                              currencyDisplay: "symbol",
-                            }).format(item.price)}{" "}
-                            each
+                            Quantity: {item.quantity}
                           </p>
                         </div>
                       </div>
+                      <p className="font-medium">
+                        ETB {(item.price * item.quantity).toFixed(2)}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
-                      <div className="flex items-center space-x-3">
-                        <div className="flex items-center space-x-2">
+              <div className="pt-4 border-t space-y-2">
+                <div className="flex justify-between">
+                  <span>Subtotal</span>
+                  <span>ETB {currentOrder.total.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between font-medium">
+                  <span>Total</span>
+                  <span>ETB {currentOrder.total.toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => handleReorderClick(currentOrder.id)}
+                className="bg-orange-500 hover:bg-orange-600 text-white"
+              >
+                Reorder Items
+              </Button>
+              <Button onClick={() => setOrderDialogOpen(false)}>Close</Button>
+            </DialogFooter>
+          </DialogContent>
+        )}
+      </Dialog>
+
+      <Dialog open={reorderDialogOpen} onOpenChange={setReorderDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col gap-0 p-0">
+          <div className="p-6 border-b">
+            <DialogHeader>
+              <DialogTitle>Modify Order</DialogTitle>
+              <DialogDescription>
+                Review and modify your order before placing it.
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+
+          <div className="flex-1 overflow-y-auto px-6">
+            <Tabs defaultValue="items" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 sticky top-0 bg-white z-10">
+                <TabsTrigger value="items">
+                  Your Items ({reorderItems.length})
+                </TabsTrigger>
+                <TabsTrigger value="browse">Browse Products</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="items" className="mt-4">
+                <div className="space-y-4 pb-4">
+                  {reorderItems.map((item) => (
+                    <div
+                      key={item.productId}
+                      className="flex items-center justify-between p-4 border rounded-lg"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="relative w-12 h-12">
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            fill
+                            className="rounded object-cover"
+                          />
+                        </div>
+                        <div>
+                          <h4 className="font-medium">{item.name}</h4>
+                          <p className="text-sm text-gray-500">
+                            ETB {item.price.toFixed(2)} each
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-2">
                           <Button
                             variant="outline"
                             size="icon"
-                            className="h-8 w-8"
-                            onClick={() => updateQuantity(item.id, -1)}
+                            onClick={() =>
+                              handleQuantityChange(item.productId, -1)
+                            }
                           >
-                            <Minus className="h-3 w-3" />
+                            <Minus className="h-4 w-4" />
                           </Button>
                           <span className="w-8 text-center">
                             {item.quantity}
@@ -544,137 +400,232 @@ export default function OrdersList() {
                           <Button
                             variant="outline"
                             size="icon"
-                            className="h-8 w-8"
-                            onClick={() => updateQuantity(item.id, 1)}
+                            onClick={() =>
+                              handleQuantityChange(item.productId, 1)
+                            }
                           >
-                            <Plus className="h-3 w-3" />
+                            <Plus className="h-4 w-4" />
                           </Button>
                         </div>
-                        <span className="w-20 text-right font-medium">
-                          {new Intl.NumberFormat("en-ET", {
-                            style: "currency",
-                            currency: "ETB",
-                            currencyDisplay: "symbol",
-                          }).format(item.price * item.quantity)}
-                        </span>
+                        <div className="w-24 text-right">
+                          ETB {(item.price * item.quantity).toFixed(2)}
+                        </div>
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8 text-red-500"
-                          onClick={() => removeItem(item.id)}
+                          className="text-red-500"
+                          onClick={() =>
+                            handleRemoveReorderItem(item.productId)
+                          }
                         >
                           <X className="h-4 w-4" />
                         </Button>
                       </div>
                     </div>
                   ))}
-                </div>
-              )}
 
-              {orderItems.length > 0 && (
-                <div className="flex justify-end items-center pt-2">
-                  <div className="text-right">
-                    <p className="text-sm text-gray-500">Total</p>
-                    <p className="font-bold text-lg">
-                      {calculateTotal(orderItems)}
-                    </p>
-                  </div>
-                </div>
-              )}
-            </TabsContent>
-
-            <TabsContent value="browse" className="space-y-4 mt-4">
-              <div className="mb-4">
-                <Input
-                  placeholder="Search products..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="mb-2"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {filteredProducts.map((product) => (
-                  <div
-                    key={product.id}
-                    className="flex items-center justify-between border rounded-md p-2"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <div className="w-10 h-10 rounded-md overflow-hidden border border-gray-200">
-                        <Image
-                          src={product.image || "/placeholder.svg"}
-                          alt={product.name}
-                          width={40}
-                          height={40}
-                          className="object-cover"
-                        />
-                      </div>
-                      <div>
-                        <p className="font-medium">{product.name}</p>
-                        <p className="text-sm text-gray-500">
-                          {new Intl.NumberFormat("en-ET", {
-                            style: "currency",
-                            currency: "ETB",
-                            currencyDisplay: "symbol",
-                          }).format(product.price)}
+                  {reorderItems.length > 0 && (
+                    <div className="flex justify-end pt-4">
+                      <div className="text-right">
+                        <p className="text-sm text-gray-500">Total</p>
+                        <p className="text-xl font-bold">
+                          ETB {calculateReorderTotal().toFixed(2)}
                         </p>
                       </div>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-green-600"
-                      onClick={() => addProduct(product)}
+                  )}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="browse" className="mt-4">
+                <div className="grid grid-cols-2 gap-4 pb-4">
+                  {uniqueProducts.map((product) => (
+                    <div
+                      key={product.productId}
+                      className="flex items-center justify-between p-4 border rounded-lg"
                     >
-                      <Plus className="h-4 w-4 mr-1" />
-                      Add
-                    </Button>
-                  </div>
-                ))}
+                      <div className="flex items-center gap-3">
+                        <div className="relative w-12 h-12">
+                          <Image
+                            src={product.image}
+                            alt={product.name}
+                            fill
+                            className="rounded object-cover"
+                          />
+                        </div>
+                        <div>
+                          <p className="font-medium">{product.name}</p>
+                          <p className="text-sm text-gray-500">
+                            ETB {product.price.toFixed(2)}
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        className="text-green-600 hover:text-green-700"
+                        onClick={() => {
+                          const existingItem = reorderItems.find(
+                            (i) => i.productId === product.productId
+                          );
+                          if (existingItem) {
+                            handleQuantityChange(product.productId, 1);
+                          } else {
+                            setReorderItems((prev) => [
+                              ...prev,
+                              { ...product, quantity: 1 },
+                            ]);
+                          }
+                        }}
+                      >
+                        <Plus className="w-4 h-4 mr-1" /> Add
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </TabsContent>
+            </Tabs>
+          </div>
 
-                {filteredProducts.length === 0 && (
-                  <div className="col-span-2 text-center py-4">
-                    <p className="text-gray-500">No products found</p>
-                  </div>
-                )}
-              </div>
-            </TabsContent>
-          </Tabs>
-
-          <DialogFooter className="flex justify-between items-center mt-6">
-            <div className="text-sm text-gray-500">
-              {orderItems.length > 0 && (
-                <p>
-                  You'll earn approximately{" "}
-                  {Math.floor(
-                    Number.parseFloat(
-                      orderItems.reduce(
-                        (total, item) => total + item.price * item.quantity,
-                        0
-                      )
-                    ) / 3
-                  )}{" "}
-                  loyalty points
-                </p>
-              )}
-            </div>
-            <div className="space-x-2">
+          <div className="p-6 border-t mt-auto">
+            <DialogFooter className="flex justify-between">
               <Button
                 variant="outline"
-                onClick={() => setOrderDialogOpen(false)}
+                onClick={() => {
+                  setReorderDialogOpen(false);
+                  setReorderItems([]);
+                }}
               >
                 Cancel
               </Button>
               <Button
-                className="bg-green-600 hover:bg-green-700"
-                onClick={placeOrder}
-                disabled={orderItems.length === 0}
+                onClick={handlePlaceModifiedOrder}
+                className="bg-green-500 hover:bg-green-600 text-white"
+                disabled={reorderItems.length === 0}
               >
-                <ShoppingCart className="h-4 w-4 mr-2" />
+                <ShoppingCart className="w-4 h-4 mr-2" />
                 Place Order
               </Button>
-            </div>
-          </DialogFooter>
+            </DialogFooter>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={newOrderDialogOpen} onOpenChange={setNewOrderDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col gap-0 p-0">
+          <div className="p-6 border-b">
+            <DialogHeader>
+              <DialogTitle>Create New Order</DialogTitle>
+              <DialogDescription>
+                Add products to your new order.
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+
+          <div className="flex-1 overflow-y-auto px-6">
+            <Tabs defaultValue="browse" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 sticky top-0 bg-white z-10">
+                <TabsTrigger value="items">
+                  Your Items ({newOrderItems.length})
+                </TabsTrigger>
+                <TabsTrigger value="browse">Browse Products</TabsTrigger>
+              </TabsList>
+              <TabsContent value="items" className="mt-2">
+                <div className="grid grid-cols-2 gap-4 pb-4">
+                  {newOrderItems.map((item) => (
+                    <div
+                      key={item.productId}
+                      className="flex items-center justify-between p-4 border rounded-lg"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="relative w-12 h-12">
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            fill
+                            className="rounded object-cover"
+                          />
+                        </div>
+                        <div>
+                          <p className="font-medium">{item.name}</p>
+                          <p className="text-sm text-gray-500">
+                            ETB {item.price.toFixed(2)}
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        className="text-red-500 hover:text-red-600"
+                        onClick={() => {
+                          setNewOrderItems((prev) =>
+                            prev.filter((i) => i.productId !== item.productId)
+                          );
+                        }}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="browse" className="mt-2">
+                <div className="grid grid-cols-2 gap-4 pb-4">
+                  {filteredProducts.map((product) => (
+                    <div
+                      key={product.productId}
+                      className="flex items-center justify-between p-4 border rounded-lg"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="relative w-12 h-12">
+                          <Image
+                            src={product.image}
+                            alt={product.name}
+                            fill
+                            className="rounded object-cover"
+                          />
+                        </div>
+                        <div>
+                          <p className="font-medium">{product.name}</p>
+                          <p className="text-sm text-gray-500">
+                            ETB {product.price.toFixed(2)}
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        className="text-green-600 hover:text-green-700"
+                        onClick={() => handleAddToNewOrder(product)}
+                      >
+                        <Plus className="w-4 h-4 mr-1" /> Add
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </TabsContent>
+            </Tabs>
+          </div>
+
+          <div className="p-6 border-t mt-auto">
+            <DialogFooter className="flex justify-between">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setNewOrderDialogOpen(false);
+                  setNewOrderItems([]);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handlePlaceOrder}
+                className="bg-green-500 hover:bg-green-600 text-white"
+                disabled={newOrderItems.length === 0}
+              >
+                <ShoppingCart className="w-4 h-4 mr-2" />
+                Place Order
+              </Button>
+            </DialogFooter>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
