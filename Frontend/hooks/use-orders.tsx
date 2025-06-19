@@ -20,7 +20,11 @@ interface OrderContextType {
     completed: boolean,
   ) => Promise<{ success: boolean; allCompleted?: boolean; error?: string }>
   handoffOrder: (orderId: string | number, orderType: OrderType) => Promise<{ success: boolean; error?: string }>
+<<<<<<< HEAD
   addOrder: (order: Order) => void
+=======
+  addOrder: (order: Order) => Promise<{ success: boolean; error?: string }>
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
 }
 
 // Create context
@@ -274,10 +278,58 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+<<<<<<< HEAD
   // Add order
   const addOrder = (order: Order) => {
     setOrders((prevOrders) => [order, ...prevOrders])
   }
+=======
+  // Add notification function
+  const notifyNewOrder = async (order: Order) => {
+    try {
+      // Check if browser supports notifications
+      if (!("Notification" in window)) {
+        console.log("This browser does not support notifications");
+        return;
+      }
+
+      // Request notification permission if not granted
+      if (Notification.permission !== "granted") {
+        const permission = await Notification.requestPermission();
+        if (permission !== "granted") {
+          return;
+        }
+      }
+
+      // Create notification for new order
+      new Notification("New Order Received", {
+        body: `Order #${order.id} from ${order.customerName} - Total: $${order.total.toFixed(2)}`,
+        icon: "/logo.png", // Make sure to add your logo to public folder
+      });
+    } catch (error) {
+      console.error("Error sending notification:", error);
+    }
+  };
+
+  // Add new order
+  const addOrder = async (newOrder: Order) => {
+    try {
+      setOrders((prevOrders) => [...prevOrders, newOrder]);
+      
+      // Notify employees of new order
+      if (user?.role === "employee" && user.supermarketId === newOrder.supermarketId) {
+        await notifyNewOrder(newOrder);
+      }
+      
+      return { success: true };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Failed to add order",
+      };
+    }
+  };
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
 
   return (
     <OrderContext.Provider
@@ -306,29 +358,48 @@ export function useOrders(options?: {
   refetchInterval?: number
 }) {
   const context = useContext(OrderContext)
+<<<<<<< HEAD
   if (context === undefined) {
+=======
+  if (!context) {
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
     throw new Error("useOrders must be used within an OrderProvider")
   }
 
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([])
   const [isLoading, setIsLoading] = useState(true)
+<<<<<<< HEAD
   const [orderData, setOrderData] = useState<Order | undefined>(undefined)
   const [orderError, setOrderError] = useState<string | null>(null)
   const [isLoadingOrder, setIsLoadingOrder] = useState(false)
+=======
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
 
   // Filter orders based on options
   useEffect(() => {
     setIsLoading(true)
     let result = [...context.orders]
 
+<<<<<<< HEAD
+=======
+    // Filter by supermarket ID
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
     if (options?.supermarketId) {
       result = result.filter((order) => order.supermarketId === options.supermarketId)
     }
 
+<<<<<<< HEAD
+=======
+    // Filter by status
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
     if (options?.status) {
       result = result.filter((order) => order.status === options.status)
     }
 
+<<<<<<< HEAD
+=======
+    // Filter by type
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
     if (options?.type) {
       result = result.filter((order) => order.type === options.type)
     }
@@ -343,7 +414,11 @@ export function useOrders(options?: {
 
     const intervalId = setInterval(() => {
       // This just triggers a re-render to refresh the filtered orders
+<<<<<<< HEAD
       setFilteredOrders([...filteredOrders])
+=======
+      setFilteredOrders((prev) => [...prev])
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
     }, options.refetchInterval)
 
     return () => clearInterval(intervalId)
@@ -359,6 +434,7 @@ export function useOrders(options?: {
     }, 300)
   }, [])
 
+<<<<<<< HEAD
   // Get order by ID function that follows React hooks rules
   const getById = useCallback(
     (orderId: string | number) => {
@@ -398,5 +474,19 @@ export function useOrders(options?: {
     isLoading,
     refetch,
     getById,
+=======
+  return {
+    orders: filteredOrders,
+    isLoading,
+    refetch,
+    claimOrder: context.claimOrder,
+    getOrdersByStatus: context.getOrdersByStatus,
+    getOrderById: context.getOrderById,
+    getOrdersForCurrentSupermarket: context.getOrdersForCurrentSupermarket,
+    getOrderCountByStatus: context.getOrderCountByStatus,
+    updateOrderItemStatus: context.updateOrderItemStatus,
+    handoffOrder: context.handoffOrder,
+    addOrder: context.addOrder,
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
   }
 }

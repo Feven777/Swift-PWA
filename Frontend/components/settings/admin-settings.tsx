@@ -14,16 +14,41 @@ import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/hooks/use-toast"
 import { useAuth } from "@/hooks/use-auth"
 import { useSettings } from "@/hooks/use-settings"
+<<<<<<< HEAD
 
 export function AdminSettings() {
   const { user } = useAuth()
+=======
+import { User, Mail, Phone, MapPin, Shield, Settings, Lock } from "lucide-react"
+
+interface AccountSettings {
+  name: string
+  email: string
+  phone?: string
+  address?: string
+  currentPassword: string
+  newPassword: string
+  confirmPassword: string
+}
+
+export function AdminSettings() {
+  const { user, updateProfile } = useAuth()
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
   const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
 
   // Account settings
+<<<<<<< HEAD
   const [accountSettings, setAccountSettings] = useState({
     name: user?.name || "",
     email: user?.email || "",
+=======
+  const [accountSettings, setAccountSettings] = useState<AccountSettings>({
+    name: user?.name || "",
+    email: user?.email || "",
+    phone: user?.phone || "",
+    address: user?.address || "",
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
@@ -62,16 +87,62 @@ export function AdminSettings() {
         ...prev,
         name: user.name,
         email: user.email,
+<<<<<<< HEAD
+=======
+        phone: user.phone,
+        address: user.address,
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
       }))
     }
   }, [user])
 
+<<<<<<< HEAD
   const handleAccountSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
 
     // Validate passwords
     if (accountSettings.newPassword && accountSettings.newPassword !== accountSettings.confirmPassword) {
+=======
+  const handleProfileUpdate = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+
+    try {
+      const success = await updateProfile({
+        name: accountSettings.name,
+        email: accountSettings.email,
+      })
+
+      if (success.success) {
+        toast({
+          title: "Profile updated",
+          description: "Your profile has been updated successfully.",
+        })
+      } else {
+        toast({
+          title: "Error",
+          description: success.error || "Failed to update profile. Please try again.",
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handlePasswordUpdate = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+
+    if (accountSettings.newPassword !== accountSettings.confirmPassword) {
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
       toast({
         title: "Passwords don't match",
         description: "Please make sure your passwords match.",
@@ -81,6 +152,7 @@ export function AdminSettings() {
       return
     }
 
+<<<<<<< HEAD
     // Simulate API call
     setTimeout(() => {
       // In a real app, this would be an API call to update the user
@@ -93,15 +165,36 @@ export function AdminSettings() {
       }
 
       // Clear password fields after successful update
+=======
+    try {
+      // TODO: Implement password update functionality
+      // For now, we'll just show a success message
+      toast({
+        title: "Password updated",
+        description: "Your password has been updated successfully.",
+      })
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
       setAccountSettings({
         ...accountSettings,
         currentPassword: "",
         newPassword: "",
         confirmPassword: "",
       })
+<<<<<<< HEAD
 
       setIsLoading(false)
     }, 1000)
+=======
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsLoading(false)
+    }
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
   }
 
   const handlePlatformSubmit = (e: React.FormEvent) => {
@@ -174,6 +267,7 @@ export function AdminSettings() {
 
         <TabsContent value="account" className="space-y-4">
           <Card>
+<<<<<<< HEAD
             <form onSubmit={handleAccountSubmit}>
               <CardHeader>
                 <CardTitle>Account Information</CardTitle>
@@ -214,6 +308,141 @@ export function AdminSettings() {
                 </Button>
               </CardFooter>
             </form>
+=======
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <User className="h-5 w-5" />
+                Profile Settings
+              </CardTitle>
+              <CardDescription>Update your profile information</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleProfileUpdate} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Name</Label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="name"
+                      value={accountSettings.name}
+                      onChange={(e) => setAccountSettings({ ...accountSettings, name: e.target.value })}
+                      className="pl-9"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="email"
+                      type="email"
+                      value={accountSettings.email}
+                      onChange={(e) => setAccountSettings({ ...accountSettings, email: e.target.value })}
+                      className="pl-9"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone</Label>
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="phone"
+                      type="tel"
+                      value={accountSettings.phone}
+                      onChange={(e) => setAccountSettings({ ...accountSettings, phone: e.target.value })}
+                      className="pl-9"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="address">Address</Label>
+                  <div className="relative">
+                    <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="address"
+                      type="text"
+                      value={accountSettings.address}
+                      onChange={(e) => setAccountSettings({ ...accountSettings, address: e.target.value })}
+                      className="pl-9"
+                    />
+                  </div>
+                </div>
+
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? "Updating..." : "Update Profile"}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Lock className="h-5 w-5" />
+                Password Settings
+              </CardTitle>
+              <CardDescription>Update your password</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handlePasswordUpdate} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="currentPassword">Current Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="currentPassword"
+                      type="password"
+                      value={accountSettings.currentPassword}
+                      onChange={(e) => setAccountSettings({ ...accountSettings, currentPassword: e.target.value })}
+                      className="pl-9"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="newPassword">New Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="newPassword"
+                      type="password"
+                      value={accountSettings.newPassword}
+                      onChange={(e) => setAccountSettings({ ...accountSettings, newPassword: e.target.value })}
+                      className="pl-9"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="confirmPassword"
+                      type="password"
+                      value={accountSettings.confirmPassword}
+                      onChange={(e) => setAccountSettings({ ...accountSettings, confirmPassword: e.target.value })}
+                      className="pl-9"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? "Updating..." : "Update Password"}
+                </Button>
+              </form>
+            </CardContent>
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
           </Card>
         </TabsContent>
 

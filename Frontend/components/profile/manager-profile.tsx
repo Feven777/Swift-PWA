@@ -16,6 +16,11 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
 import type { User } from "@/types/user"
+<<<<<<< HEAD
+=======
+import { useAuth } from "@/hooks/use-auth"
+import { User as LucideUser, Mail, Phone, MapPin, Store } from "lucide-react"
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
 
 interface ManagerProfileProps {
   user: User
@@ -41,6 +46,10 @@ interface ManagerStats {
 
 export function ManagerProfile({ user }: ManagerProfileProps) {
   const { toast } = useToast()
+<<<<<<< HEAD
+=======
+  const { updateProfile } = useAuth()
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
   const [isLoading, setIsLoading] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
 
@@ -53,7 +62,10 @@ export function ManagerProfile({ user }: ManagerProfileProps) {
     location: "Addis Ababa, Ethiopia",
   })
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
   // Notification preferences
   const [notificationPreferences, setNotificationPreferences] = useState({
     email: true,
@@ -91,16 +103,23 @@ export function ManagerProfile({ user }: ManagerProfileProps) {
     setIsLoading(true)
 
     try {
+<<<<<<< HEAD
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000))
 
       // In a real app, you would update the user profile here
 
+=======
+      await updateProfile(profileForm)
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
       toast({
         title: "Profile updated",
         description: "Your profile has been updated successfully.",
       })
+<<<<<<< HEAD
 
+=======
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
       setIsEditing(false)
     } catch (error) {
       toast({
@@ -113,8 +132,11 @@ export function ManagerProfile({ user }: ManagerProfileProps) {
     }
   }
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
   // Handle notification preferences submission
   const handleNotificationSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -242,24 +264,47 @@ export function ManagerProfile({ user }: ManagerProfileProps) {
                     <CardDescription>Update your account information and profile details</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
+<<<<<<< HEAD
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="name">Full Name</Label>
+=======
+                    <div className="space-y-2">
+                      <Label htmlFor="name">Name</Label>
+                      <div className="relative">
+                        <LucideUser className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
                         <Input
                           id="name"
                           value={profileForm.name}
                           onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
                           disabled={!isEditing || isLoading}
+<<<<<<< HEAD
                         />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="email">Email</Label>
+=======
+                          className="pl-9"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email</Label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
                         <Input
                           id="email"
                           type="email"
                           value={profileForm.email}
                           onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
                           disabled={!isEditing || isLoading}
+<<<<<<< HEAD
+=======
+                          className="pl-9"
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
                         />
                       </div>
                     </div>
@@ -275,6 +320,7 @@ export function ManagerProfile({ user }: ManagerProfileProps) {
                       />
                     </div>
 
+<<<<<<< HEAD
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="phone">Phone</Label>
@@ -287,11 +333,36 @@ export function ManagerProfile({ user }: ManagerProfileProps) {
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="location">Location</Label>
+=======
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">Phone</Label>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="phone"
+                          type="tel"
+                          value={profileForm.phone}
+                          onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
+                          disabled={!isEditing || isLoading}
+                          className="pl-9"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="location">Location</Label>
+                      <div className="relative">
+                        <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
                         <Input
                           id="location"
                           value={profileForm.location}
                           onChange={(e) => setProfileForm({ ...profileForm, location: e.target.value })}
                           disabled={!isEditing || isLoading}
+<<<<<<< HEAD
+=======
+                          className="pl-9"
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
                         />
                       </div>
                     </div>
@@ -337,6 +408,7 @@ export function ManagerProfile({ user }: ManagerProfileProps) {
                       <p className="text-sm text-muted-foreground">Supermarket Logo</p>
                     </div>
 
+<<<<<<< HEAD
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="supermarket-name">Supermarket Name</Label>
@@ -351,6 +423,21 @@ export function ManagerProfile({ user }: ManagerProfileProps) {
                           disabled={isLoading}
                         />
                       </div>
+=======
+                    <div className="space-y-2">
+                      <Label htmlFor="supermarket-name">Supermarket Name</Label>
+                      <Input id="supermarket-name" defaultValue={supermarket.name} disabled={isLoading} />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="supermarket-email">Email</Label>
+                      <Input
+                        id="supermarket-email"
+                        type="email"
+                        defaultValue={supermarket.email}
+                        disabled={isLoading}
+                      />
+>>>>>>> dd84196c3bbda98866cbeb80e93d019883b64720
                     </div>
 
                     <div className="space-y-2">
