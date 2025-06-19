@@ -16,6 +16,8 @@ import { Button } from "@/components/ui/button";
 import { useCheckout } from "@/context/checkout-context";
 import { useCart } from "@/context/cart-context"; // Import cart context to fetch cart data
 import { useRouter } from "next/navigation";
+import { useOrders } from "@/hooks/use-orders";
+import { useAuth } from "@/hooks/use-auth";
 
 // Helper function to format currency in ETB
 const formatCurrency = (amount: number) => {
@@ -48,6 +50,8 @@ export default function ConfirmationStep() {
 
   const router = useRouter();
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const { addOrder } = useOrders();
+  const { user } = useAuth();
 
   const handleBack = () => {
     setCurrentStep(2);
@@ -59,9 +63,36 @@ export default function ConfirmationStep() {
     // Simulate API call to place order
     setTimeout(() => {
       // Generate a random order number if not already set
+      let newOrderNumber = orderNumber;
       if (!orderNumber) {
-        setOrderNumber(`SW-${Math.floor(100000 + Math.random() * 900000)}`);
+        newOrderNumber = `SW-${Math.floor(100000 + Math.random() * 900000)}`;
+        setOrderNumber(newOrderNumber);
       }
+
+      // Build the new order object
+      const newOrder = {
+        id: newOrderNumber,
+        customerId: user?.id || "",
+        customerName: user?.name || "",
+        customerEmail: user?.email || "",
+        supermarketId: defaultStore.id,
+        supermarketName: defaultStore.name,
+        date: new Date().toISOString(),
+        status: "unclaimed" as import("@/types/order").OrderStatus,
+        type: deliveryMethod,
+        items: cartItems.map((item) => ({
+          id: item.id,
+          productId: item.id, // If you have a separate productId, use it
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          image: item.image || "",
+          completed: false,
+        })),
+        total: total,
+        specialInstructions: deliveryDetails?.deliveryInstructions || "",
+      };
+      addOrder(newOrder);
       setOrderPlaced(true);
       setIsPlacingOrder(false);
     }, 1500);

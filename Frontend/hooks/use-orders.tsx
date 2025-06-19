@@ -20,6 +20,7 @@ interface OrderContextType {
     completed: boolean,
   ) => Promise<{ success: boolean; allCompleted?: boolean; error?: string }>
   handoffOrder: (orderId: string | number, orderType: OrderType) => Promise<{ success: boolean; error?: string }>
+  addOrder: (order: Order) => void
 }
 
 // Create context
@@ -273,6 +274,11 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  // Add order
+  const addOrder = (order: Order) => {
+    setOrders((prevOrders) => [order, ...prevOrders])
+  }
+
   return (
     <OrderContext.Provider
       value={{
@@ -284,6 +290,7 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
         getOrderCountByStatus,
         updateOrderItemStatus,
         handoffOrder,
+        addOrder,
       }}
     >
       {children}

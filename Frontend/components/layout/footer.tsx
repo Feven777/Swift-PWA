@@ -10,30 +10,7 @@ export function Footer() {
   return (
     <footer className="bg-white border-t border-gray-200 pt-8 pb-4">
       <div className="max-w-6xl mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-          <div>
-            <h3 className="font-semibold mb-4">Swift Delivery</h3>
-            <p className="text-sm text-gray-600 mb-4">Making grocery delivery simple, fast, and transparent</p>
-            <div className="flex space-x-4">
-              <Link href="#" className="text-gray-500 hover:text-gray-700" aria-label="Twitter">
-                <Icon icon={twitterIcon} className="h-5 w-5" />
-                <span className="sr-only">Twitter</span>
-              </Link>
-              <Link href="#" className="text-gray-500 hover:text-gray-700" aria-label="Facebook">
-                <Icon icon={facebookIcon} className="h-5 w-5" />
-                <span className="sr-only">Facebook</span>
-              </Link>
-              <Link href="#" className="text-gray-500 hover:text-gray-700" aria-label="Instagram">
-                <Icon icon={instagramIcon} className="h-5 w-5" />
-                <span className="sr-only">Instagram</span>
-              </Link>
-              <Link href="#" className="text-gray-500 hover:text-gray-700" aria-label="YouTube">
-                <Icon icon={youtubeIcon} className="h-5 w-5" />
-                <span className="sr-only">YouTube</span>
-              </Link>
-            </div>
-          </div>
-
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           <div>
             <h3 className="font-semibold mb-4">Shop</h3>
             <ul className="space-y-2 text-sm">
@@ -43,18 +20,13 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/categories/fresh" className="text-gray-600 hover:text-gray-900">
-                  Fresh Produce
+                <Link href="/products" className="text-gray-600 hover:text-gray-900">
+                  Products
                 </Link>
               </li>
               <li>
-                <Link href="/categories/meals" className="text-gray-600 hover:text-gray-900">
-                  Meal Kits
-                </Link>
-              </li>
-              <li>
-                <Link href="/deals" className="text-gray-600 hover:text-gray-900">
-                  Deals & Offers
+                <Link href="/cart" className="text-gray-600 hover:text-gray-900">
+                  Cart
                 </Link>
               </li>
             </ul>
@@ -66,16 +38,6 @@ export function Footer() {
               <li>
                 <Link href="/tracking" className="text-gray-600 hover:text-gray-900">
                   Track Order
-                </Link>
-              </li>
-              <li>
-                <Link href="/checkout" className="text-gray-600 hover:text-gray-900">
-                  Delivery Info
-                </Link>
-              </li>
-              <li>
-                <Link href="/returns" className="text-gray-600 hover:text-gray-900">
-                  Returns & Refunds
                 </Link>
               </li>
               <li>
@@ -118,9 +80,6 @@ export function Footer() {
             </Link>
             <Link href="/terms" className="hover:text-gray-700">
               Terms of Service
-            </Link>
-            <Link href="/cookies" className="hover:text-gray-700">
-              Cookies
             </Link>
           </div>
         </div>

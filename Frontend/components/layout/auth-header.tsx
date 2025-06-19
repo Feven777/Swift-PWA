@@ -5,12 +5,15 @@ import { useRouter } from "next/navigation"
 import { LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/hooks/use-auth"
+import { useCart } from "@/context/cart-context"
 
 export function AuthHeader() {
   const { user, logout } = useAuth()
+  const { clearCart } = useCart()
   const router = useRouter()
 
   const handleLogout = () => {
+    clearCart()
     logout()
     router.push("/")
   }

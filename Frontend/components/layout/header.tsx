@@ -41,6 +41,7 @@ export function Header() {
   const router = useRouter();
   const pathname = usePathname();
   const { user, logout } = useAuth();
+  const { clearCart } = useCart();
   const role = user?.role ?? "buyer";
   const isManagerAdmin = role === "manager" || role === "admin";
   const { totalItems } = useCart();
@@ -77,6 +78,11 @@ export function Header() {
     router.push("/profile");
     }
     };
+
+  const handleLogout = () => {
+    clearCart();
+    logout();
+  };
 
   // sheet navigation uses emojis only
   const buyerNav = [
@@ -213,10 +219,7 @@ export function Header() {
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
-                    onClick={() => {
-                      logout();
-                      router.push("/");
-                    }}
+                    onClick={handleLogout}
                   >
                     <Icon icon="mdi:logout" className="h-4 w-4 mr-2" />
                     Logout

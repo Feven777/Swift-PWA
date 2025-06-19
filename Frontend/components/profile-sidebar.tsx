@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/use-auth"
 import Image from "next/image"
 import Link from "next/link"
 import { FileText, Home, MessageSquare, Settings, LogOut, Edit } from "lucide-react"
+import { useCart } from "@/context/cart-context"
 
 interface ProfileSidebarProps {
   activePage?: "orders" | "preferences" | "support" | "settings"
@@ -13,6 +14,7 @@ export default function ProfileSidebar({
   activePage = "orders",
 }: ProfileSidebarProps) {
   const { user, isLoading, logout } = useAuth()
+  const { clearCart } = useCart()
 
   // 1) Show spinner while context hydrates
   if (isLoading) {
@@ -27,7 +29,7 @@ export default function ProfileSidebar({
   if (!user) {
     return (
       <div className="p-4 text-center text-red-500">
-        You’re not signed in.{" "}
+        You're not signed in.{" "}
         <Link href="/auth" className="text-green-600 hover:underline">
           Go to login
         </Link>
@@ -43,7 +45,7 @@ export default function ProfileSidebar({
         <div className="relative w-24 h-24 mb-3">
           <Image
             src={ user.avatarUrl ?? "/profile2.jpg"}
-            alt={`${user.name}’s avatar`}
+            alt={`${user.name}'s avatar`}
             width={100}
             height={100}
             className="rounded-full object-cover border-4 border-red-200 bg-red-200"
@@ -121,7 +123,7 @@ export default function ProfileSidebar({
       {/* Logout Button */}
       <div className="mt-6 w-full">
         <button
-          onClick={logout}
+          onClick={() => { clearCart(); logout(); }}
           className="flex items-center p-3 text-red-600 hover:bg-gray-100 rounded-md w-full"
         >
           <LogOut className="h-5 w-5 mr-3" />
