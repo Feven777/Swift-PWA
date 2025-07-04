@@ -1,35 +1,23 @@
-# Step 1: Build the app
-FROM node:22-alpine AS builder
+# Use the official Node.js image (replace 22 with the Node version you use)
+FROM node:22-alpine
 
-# Set working directory inside the container
+# Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json or pnpm-lock.yaml
+# Copy package files
 COPY package*.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy the rest of your app's code
+# Copy the rest of your code
 COPY . .
 
-# Build the Next.js app
+# Build the app
 RUN npm run build
 
-# Step 2: Run the app
-FROM node:22-alpine AS runner
-
-# Set working directory
-WORKDIR /app
-
-# Copy only the built output and production dependencies
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-
-# Tell Docker which port the app uses
+# Expose port (default for Next.js)
 EXPOSE 3000
 
-# Command to run the app
+# Start the app
 CMD ["npm", "start"]
